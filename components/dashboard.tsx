@@ -1,18 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, Bell, BookOpenCheck, CalendarDays, ChevronRight, CircleAlert, CircleCheck, Clock3, Command, FileText, Menu, MessageSquareText, Plus, Search, UserPlus, UsersRound } from "lucide-react";
+import { ArrowRight, Bell, BookOpenCheck, ChevronRight, CircleAlert, CircleCheck, Clock3, Command, FileText, Menu, MessageSquareText, Plus, Search, UserPlus, UsersRound } from "lucide-react";
 import { Sidebar } from "./sidebar";
 import { CommandPalette } from "./command-palette";
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      [elemName: string]: any;
+    }
+  }
+}
+
 const attention = [
-  { icon: UsersRound, value: "7", title: "Deposits need follow-up", detail: "Mini Drippers enrollment", tone: "danger" },
-  { icon: MessageSquareText, value: "2", title: "Support replies pending", detail: "Oldest waiting 42 minutes", tone: "warning" },
-  { icon: CircleCheck, value: "74", title: "Community members", detail: "Mini Drippers space", tone: "success" },
+  { icon: UsersRound, value: "7", title: "Mini Drippers need to enroll", detail: "Paid deposits awaiting registration", tone: "danger" },
+  { icon: MessageSquareText, value: "2", title: "Member emails are waiting", detail: "Oldest waiting 42 minutes", tone: "warning" },
+  { icon: CircleCheck, value: "74", title: "Mini Drippers have community access", detail: "MCurrent community membership", tone: "success" },
 ];
 
 const actions = [
-  { icon: UserPlus, label: "Invite member" }, { icon: FileText, label: "Find a template" }, { icon: BookOpenCheck, label: "Open SOP library" }, { icon: Plus, label: "Add resource" },
+  { icon: UserPlus, label: "Invite a member" }, { icon: FileText, label: "Use an email template" }, { icon: BookOpenCheck, label: "Find an SOP" }, { icon: Plus, label: "Add a resource" },
 ];
 
 const schedule = [
@@ -24,6 +32,13 @@ const schedule = [
 export function Dashboard() {
   const [menu, setMenu] = useState(false);
   const [command, setCommand] = useState(false);
+  
+  const today = new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  }).format(new Date());
+  
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") { event.preventDefault(); setCommand(true); }
@@ -46,12 +61,13 @@ export function Dashboard() {
 
         <div className="mx-auto max-w-[1500px] px-4 py-8 sm:px-7 lg:px-9 lg:py-10">
           <section className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-            <div><p className="mb-2 text-xs font-semibold uppercase tracking-[.2em] text-[#9d7cc1]">Wednesday · July 15</p><h1 className="m-0 text-3xl font-semibold tracking-[-.04em] sm:text-[42px]">Good morning, Kayla.</h1><p className="mt-3 max-w-xl text-sm leading-6 text-[#8c8593]">Here’s what needs your attention across ATFT today.</p></div>
-            <button className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[#d7bbf3] px-4 text-xs font-semibold text-[#17111d] hover:bg-[#e2cbf7]"><Plus size={15}/> Create</button>
+            <div><p className="mb-2 text-xs font-semibold uppercase tracking-[.2em] text-[#9d7cc1]">{today}</p>
+            <h1 className="m-0 text-3xl font-semibold tracking-[-.04em] sm:text-[42px]">Good morning, Kayla.</h1><p className="mt-3 max-w-xl text-sm leading-6 text-[#8c8593]">Everything you need to keep ATFT moving today.</p></div>
+            <button className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[#d7bbf3] px-4 text-xs font-semibold text-[#17111d] hover:bg-[#e2cbf7]"><Plus size={15}/> Quick action</button>
           </section>
 
           <section className="mt-9">
-            <div className="mb-4 flex items-center justify-between"><div className="flex items-center gap-2"><CircleAlert size={17} className="text-[#c6a6ee]"/><h2 className="m-0 text-sm font-semibold">Needs attention</h2></div><button className="flex items-center gap-1 text-xs text-[#8e8795] hover:text-white">View all <ChevronRight size={14}/></button></div>
+            <div className="mb-4 flex items-center justify-between"><div className="flex items-center gap-2"><CircleAlert size={17} className="text-[#c6a6ee]"/><h2 className="m-0 text-sm font-semibold">Today's Focus</h2></div><button className="flex items-center gap-1 text-xs text-[#8e8795] hover:text-white">View all <ChevronRight size={14}/></button></div>
             <div className="grid gap-3 md:grid-cols-3">
               {attention.map(({ icon: Icon, value, title, detail, tone }) => {
                 const toneClass = tone === "danger" ? "bg-[#e47f88]/10 text-[#ef9aa2]" : tone === "warning" ? "bg-[#e9ba65]/10 text-[#e9ba65]" : "bg-[#6cc59a]/10 text-[#7ed3aa]";
@@ -71,7 +87,7 @@ export function Dashboard() {
               </section>
 
               <section>
-                <div className="mb-4 flex items-center justify-between"><div><h2 className="m-0 text-sm font-semibold">Quick actions</h2><p className="mt-1 text-xs text-[#716b78]">Common operational workflows</p></div></div>
+                <div className="mb-4 flex items-center justify-between"><div><h2 className="m-0 text-sm font-semibold">Workflows</h2><p className="mt-1 text-xs text-[#716b78]">Start a common ATFT task</p></div></div>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">{actions.map(({icon: Icon,label}) => <button key={label} className="panel group rounded-2xl p-4 text-left transition hover:-translate-y-0.5 hover:border-[#c6a6ee]/25"><span className="grid size-9 place-items-center rounded-xl bg-white/[.04] text-[#b9a1d1] group-hover:bg-[#c6a6ee]/10 group-hover:text-[#d8c0ef]"><Icon size={17}/></span><span className="mt-4 block text-xs font-medium leading-4 text-[#d6d1da]">{label}</span><ArrowRight size={14} className="mt-3 text-[#514c55] transition group-hover:translate-x-0.5 group-hover:text-[#a9a3b1]"/></button>)}</div>
               </section>
             </div>
@@ -84,11 +100,11 @@ export function Dashboard() {
               </section>
 
               <section className="panel rounded-3xl p-5">
-                <div className="flex items-center justify-between"><div><p className="m-0 text-sm font-semibold">Recently updated</p><p className="mt-1 text-[11px] text-[#716b78]">SOPs and templates</p></div><Clock3 size={16} className="text-[#716b78]"/></div>
+                <div className="flex items-center justify-between"><div><p className="m-0 text-sm font-semibold">Knowledge Center</p><p className="mt-1 text-[11px] text-[#716b78]">Recently updated guidance</p></div><Clock3 size={16} className="text-[#716b78]"/></div>
                 <div className="mt-4 space-y-1">
                   {[['Mini Dripper enrollment','SOP · 8 min'],['Community access response','Email template'],['Replay Vault publishing','Checklist · 5 steps']].map(([title,meta]) => <button key={title} className="group flex w-full items-center gap-3 rounded-xl px-2 py-3 text-left hover:bg-white/[.035]"><span className="grid size-9 place-items-center rounded-xl bg-white/[.035] text-[#8f829a]"><FileText size={15}/></span><span className="min-w-0 flex-1"><span className="block truncate text-xs font-medium text-[#d6d1da]">{title}</span><span className="mt-1 block text-[10px] text-[#6f6875]">{meta}</span></span><ChevronRight size={13} className="text-[#4b464f] group-hover:text-[#918a97]"/></button>)}
                 </div>
-                <button className="mt-3 w-full rounded-xl border border-white/[.07] py-2.5 text-[11px] text-[#8f8895] hover:bg-white/[.035] hover:text-white">Browse operations</button>
+                <button className="mt-3 w-full rounded-xl border border-white/[.07] py-2.5 text-[11px] text-[#8f8895] hover:bg-white/[.035] hover:text-white">Open Knowledge Center</button>
               </section>
             </div>
           </div>
