@@ -1,115 +1,355 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ArrowRight, Bell, BookOpenCheck, ChevronRight, CircleAlert, CircleCheck, Clock3, Command, FileText, Menu, MessageSquareText, Plus, Search, UserPlus, UsersRound } from "lucide-react";
-import { Sidebar } from "./sidebar";
-import { CommandPalette } from "./command-palette";
+import {
+  ArrowRight,
+  BookOpen,
+  CalendarDays,
+  CheckCircle2,
+  CreditCard,
+  FileText,
+  Mail,
+  PlayCircle,
+  Plus,
+  Users,
+  UsersRound,
+} from "lucide-react";
+import AppShell from "./app-shell";
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      [elemName: string]: any;
-    }
-  }
-}
-
-const attention = [
-  { icon: UsersRound, value: "7", title: "Mini Drippers need to enroll", detail: "Paid deposits awaiting registration", tone: "danger" },
-  { icon: MessageSquareText, value: "2", title: "Member emails are waiting", detail: "Oldest waiting 42 minutes", tone: "warning" },
-  { icon: CircleCheck, value: "74", title: "Mini Drippers have community access", detail: "MCurrent community membership", tone: "success" },
+const snapshot = [
+  {
+    label: "Pending Enrollments",
+    value: "7",
+    detail: "Deposits awaiting registration",
+    icon: UsersRound,
+  },
+  {
+    label: "Support Queue",
+    value: "2",
+    detail: "Member emails waiting",
+    icon: Mail,
+  },
+  {
+    label: "Classes Today",
+    value: "1",
+    detail: "Mini Drippers at 10:30 AM",
+    icon: CalendarDays,
+  },
+  {
+    label: "Payments",
+    value: "70",
+    detail: "Paid Mini Drippers",
+    icon: CreditCard,
+  },
 ];
 
-const actions = [
-  { icon: UserPlus, label: "Invite a member" }, { icon: FileText, label: "Use an email template" }, { icon: BookOpenCheck, label: "Find an SOP" }, { icon: Plus, label: "Add a resource" },
+const quickActions = [
+  {
+    title: "Mighty Networks",
+    description: "Open the ATFT Network",
+    icon: Users,
+  },
+  {
+    title: "Support Gmail",
+    description: "Open the support inbox",
+    icon: Mail,
+  },
+  {
+    title: "Google Calendar",
+    description: "View classes and deadlines",
+    icon: CalendarDays,
+  },
+  {
+    title: "Replay Vault",
+    description: "Manage class recordings",
+    icon: PlayCircle,
+  },
+  {
+    title: "Payments",
+    description: "Review enrollment payments",
+    icon: CreditCard,
+  },
+  {
+    title: "Knowledge Center",
+    description: "Find SOPs and templates",
+    icon: BookOpen,
+  },
 ];
 
 const schedule = [
-  { time: "10:30 AM", title: "Mini Drippers Live", meta: "Community · 60 min", active: true },
-  { time: "12:00 PM", title: "Support review", meta: "Operations · 30 min" },
-  { time: "2:00 PM", title: "Graduation planning", meta: "Internal · 45 min" },
+  {
+    time: "10:30 AM",
+    title: "Mini Drippers Live",
+    detail: "Coach Arletta · 60 minutes",
+    active: true,
+  },
+  {
+    time: "12:00 PM",
+    title: "Support Review",
+    detail: "Operations · 30 minutes",
+    active: false,
+  },
+  {
+    time: "2:00 PM",
+    title: "Graduation Planning",
+    detail: "Internal · 45 minutes",
+    active: false,
+  },
+];
+
+const recentUpdates = [
+  {
+    title: "Mini Dripper Enrollment SOP",
+    type: "Standard Operating Procedure",
+  },
+  {
+    title: "Community Access Response",
+    type: "Email Template",
+  },
+  {
+    title: "Replay Vault Checklist",
+    type: "Checklist",
+  },
 ];
 
 export function Dashboard() {
-  const [menu, setMenu] = useState(false);
-  const [command, setCommand] = useState(false);
-  
   const today = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
     month: "long",
     day: "numeric",
   }).format(new Date());
-  
-  useEffect(() => {
-    const handler = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") { event.preventDefault(); setCommand(true); }
-    };
-    window.addEventListener("keydown", handler); return () => window.removeEventListener("keydown", handler);
-  }, []);
 
   return (
-    <div className="min-h-screen">
-      <Sidebar open={menu} onClose={() => setMenu(false)} />
-      <CommandPalette open={command} onOpenChange={setCommand} />
-      <main className="min-h-screen lg:pl-[270px]">
-        <header className="sticky top-0 z-20 flex h-[76px] items-center gap-3 border-b border-white/[.06] bg-[#08070b]/80 px-4 backdrop-blur-xl sm:px-7 lg:px-9">
-          <button onClick={() => setMenu(true)} className="rounded-xl p-2 text-[#a9a3b1] hover:bg-white/5 lg:hidden"><Menu size={20}/></button>
-          <button onClick={() => setCommand(true)} className="flex h-10 w-full max-w-md items-center gap-2.5 rounded-xl border border-white/[.08] bg-white/[.025] px-3 text-left text-xs text-[#716b78] hover:border-white/[.13] hover:bg-white/[.04]">
-            <Search size={15}/><span className="flex-1">Search ATFT HQ...</span><span className="hidden items-center gap-1 rounded-md border border-white/[.08] bg-black/20 px-1.5 py-1 text-[10px] sm:flex"><Command size={10}/> K</span>
+    <AppShell>
+      <div className="mx-auto max-w-[1500px] px-4 py-8 sm:px-7 lg:px-9 lg:py-10">
+        <section className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300">
+              {today}
+            </p>
+
+            <h1 className="mt-2 text-3xl font-semibold tracking-[-0.04em] sm:text-[42px]">
+              Good morning, Kayla.
+            </h1>
+
+            <p className="mt-3 max-w-xl text-sm leading-6 text-[#858e88]">
+              Everything you need to keep ATFT moving today.
+            </p>
+          </div>
+
+          <button className="flex h-11 items-center justify-center gap-2 rounded-xl bg-emerald-400 px-4 text-xs font-semibold text-[#06110a] transition hover:bg-emerald-300">
+            <Plus size={15} />
+            Quick Action
           </button>
-          <button className="relative ml-auto grid size-10 shrink-0 place-items-center rounded-xl border border-white/[.07] bg-white/[.025] text-[#a9a3b1] hover:bg-white/[.05]"><Bell size={17}/><span className="absolute right-2.5 top-2.5 size-1.5 rounded-full bg-[#c6a6ee]"/></button>
-        </header>
+        </section>
 
-        <div className="mx-auto max-w-[1500px] px-4 py-8 sm:px-7 lg:px-9 lg:py-10">
-          <section className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-            <div><p className="mb-2 text-xs font-semibold uppercase tracking-[.2em] text-[#9d7cc1]">{today}</p>
-            <h1 className="m-0 text-3xl font-semibold tracking-[-.04em] sm:text-[42px]">Good morning, Kayla.</h1><p className="mt-3 max-w-xl text-sm leading-6 text-[#8c8593]">Everything you need to keep ATFT moving today.</p></div>
-            <button className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[#d7bbf3] px-4 text-xs font-semibold text-[#17111d] hover:bg-[#e2cbf7]"><Plus size={15}/> Quick action</button>
-          </section>
+        <section className="panel mt-9 rounded-3xl p-6 sm:p-8">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#858b87]">
+              Today&apos;s Snapshot
+            </p>
 
-          <section className="mt-9">
-            <div className="mb-4 flex items-center justify-between"><div className="flex items-center gap-2"><CircleAlert size={17} className="text-[#c6a6ee]"/><h2 className="m-0 text-sm font-semibold">Today's Focus</h2></div><button className="flex items-center gap-1 text-xs text-[#8e8795] hover:text-white">View all <ChevronRight size={14}/></button></div>
-            <div className="grid gap-3 md:grid-cols-3">
-              {attention.map(({ icon: Icon, value, title, detail, tone }) => {
-                const toneClass = tone === "danger" ? "bg-[#e47f88]/10 text-[#ef9aa2]" : tone === "warning" ? "bg-[#e9ba65]/10 text-[#e9ba65]" : "bg-[#6cc59a]/10 text-[#7ed3aa]";
-                return <button key={title} className="panel group flex items-center gap-4 rounded-2xl p-4 text-left transition hover:-translate-y-0.5 hover:border-white/[.13]">
-                  <span className={`grid size-11 place-items-center rounded-2xl ${toneClass}`}><Icon size={19}/></span><span className="min-w-0 flex-1"><span className="block text-xl font-semibold tracking-tight">{value}</span><span className="mt-0.5 block truncate text-xs font-medium text-[#ddd8e2]">{title}</span><span className="mt-1 block truncate text-[11px] text-[#716b78]">{detail}</span></span><ChevronRight size={15} className="text-[#4e4952] transition group-hover:translate-x-0.5 group-hover:text-[#a9a3b1]"/></button>;
+            <h2 className="mt-2 text-xl font-semibold">
+              What needs your attention
+            </h2>
+          </div>
+
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {snapshot.map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <button
+                  key={item.label}
+                  className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 text-left transition hover:border-emerald-400/20 hover:bg-emerald-400/[0.035]"
+                >
+                  <div className="flex items-start justify-between">
+                    <span className="grid size-10 place-items-center rounded-xl bg-emerald-400/10 text-emerald-300">
+                      <Icon size={18} />
+                    </span>
+
+                    <ArrowRight
+                      size={15}
+                      className="text-[#505752] transition group-hover:translate-x-1 group-hover:text-emerald-300"
+                    />
+                  </div>
+
+                  <p className="mt-5 text-2xl font-semibold">{item.value}</p>
+                  <p className="mt-1 text-sm font-medium text-[#e2e7e3]">
+                    {item.label}
+                  </p>
+                  <p className="mt-2 text-xs leading-5 text-[#727a74]">
+                    {item.detail}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <div className="mt-6 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+          <section className="panel rounded-3xl p-6 sm:p-8">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#858b87]">
+                Quick Access
+              </p>
+
+              <h2 className="mt-2 text-xl font-semibold">
+                Open an ATFT system
+              </h2>
+            </div>
+
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              {quickActions.map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <button
+                    key={item.title}
+                    className="group flex items-center gap-4 rounded-2xl border border-white/[0.06] bg-white/[0.018] p-4 text-left transition hover:border-emerald-400/20 hover:bg-emerald-400/[0.035]"
+                  >
+                    <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-emerald-400/10 text-emerald-300">
+                      <Icon size={19} />
+                    </span>
+
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-medium text-[#e4e8e5]">
+                        {item.title}
+                      </span>
+
+                      <span className="mt-1 block text-xs leading-5 text-[#737a75]">
+                        {item.description}
+                      </span>
+                    </span>
+
+                    <ArrowRight
+                      size={15}
+                      className="shrink-0 text-[#58605a] transition group-hover:translate-x-1 group-hover:text-emerald-300"
+                    />
+                  </button>
+                );
               })}
             </div>
           </section>
 
-          <div className="mt-8 grid gap-6 xl:grid-cols-[1.5fr_.85fr]">
-            <div className="space-y-6">
-              <section className="panel rounded-3xl p-5 sm:p-6">
-                <div className="flex items-center justify-between"><div><p className="m-0 text-sm font-semibold">Today’s schedule</p><p className="mt-1 text-xs text-[#716b78]">Your day at a glance</p></div><button className="rounded-xl border border-white/[.08] px-3 py-2 text-[11px] text-[#9d96a3] hover:bg-white/[.04]">Open calendar</button></div>
-                <div className="mt-5 divide-y divide-white/[.06]">
-                  {schedule.map((item) => <div key={item.title} className="flex items-center gap-4 py-4 first:pt-2 last:pb-0"><div className="w-[72px] shrink-0 text-[11px] font-medium text-[#817a87]">{item.time}</div><span className={`h-10 w-0.5 rounded-full ${item.active ? "bg-[#c6a6ee]" : "bg-white/10"}`}/><div className="min-w-0 flex-1"><p className="m-0 truncate text-xs font-medium text-[#e9e5ed]">{item.title}</p><p className="m-0 mt-1 text-[11px] text-[#716b78]">{item.meta}</p></div>{item.active && <span className="rounded-full bg-[#c6a6ee]/10 px-2 py-1 text-[9px] font-semibold uppercase tracking-[.12em] text-[#c6a6ee]">Next</span>}</div>)}
-                </div>
-              </section>
+          <section className="panel rounded-3xl p-6 sm:p-8">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#858b87]">
+                Today&apos;s Schedule
+              </p>
 
-              <section>
-                <div className="mb-4 flex items-center justify-between"><div><h2 className="m-0 text-sm font-semibold">Workflows</h2><p className="mt-1 text-xs text-[#716b78]">Start a common ATFT task</p></div></div>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">{actions.map(({icon: Icon,label}) => <button key={label} className="panel group rounded-2xl p-4 text-left transition hover:-translate-y-0.5 hover:border-[#c6a6ee]/25"><span className="grid size-9 place-items-center rounded-xl bg-white/[.04] text-[#b9a1d1] group-hover:bg-[#c6a6ee]/10 group-hover:text-[#d8c0ef]"><Icon size={17}/></span><span className="mt-4 block text-xs font-medium leading-4 text-[#d6d1da]">{label}</span><ArrowRight size={14} className="mt-3 text-[#514c55] transition group-hover:translate-x-0.5 group-hover:text-[#a9a3b1]"/></button>)}</div>
-              </section>
+              <h2 className="mt-2 text-xl font-semibold">
+                Your day at a glance
+              </h2>
             </div>
 
-            <div className="space-y-6">
-              <section className="panel rounded-3xl p-5">
-                <div className="flex items-start justify-between"><div><p className="m-0 text-sm font-semibold">Announcement</p><p className="mt-1 text-[11px] text-[#716b78]">Published today</p></div><span className="grid size-9 place-items-center rounded-xl bg-[#c6a6ee]/10 text-[#c6a6ee]"><Bell size={16}/></span></div>
-                <div className="mt-5 rounded-2xl border border-[#c6a6ee]/12 bg-[#c6a6ee]/[.045] p-4"><p className="m-0 text-xs font-semibold leading-5 text-[#e8ddf2]">Founder's Day giving remains open through Sunday.</p><p className="mb-0 mt-2 text-[11px] leading-5 text-[#8c8492]">Continue support follow-up and direct contribution questions to the official support inbox.</p></div>
-                <button className="mt-4 flex items-center gap-1 text-[11px] font-medium text-[#b99bd7] hover:text-[#d4bbed]">Read announcement <ChevronRight size={13}/></button>
-              </section>
+            <div className="mt-6 divide-y divide-white/[0.06]">
+              {schedule.map((item) => (
+                <div
+                  key={item.title}
+                  className="flex items-center gap-4 py-4 first:pt-0 last:pb-0"
+                >
+                  <div className="w-[72px] shrink-0 text-xs font-medium text-[#7d857f]">
+                    {item.time}
+                  </div>
 
-              <section className="panel rounded-3xl p-5">
-                <div className="flex items-center justify-between"><div><p className="m-0 text-sm font-semibold">Knowledge Center</p><p className="mt-1 text-[11px] text-[#716b78]">Recently updated guidance</p></div><Clock3 size={16} className="text-[#716b78]"/></div>
-                <div className="mt-4 space-y-1">
-                  {[['Mini Dripper enrollment','SOP · 8 min'],['Community access response','Email template'],['Replay Vault publishing','Checklist · 5 steps']].map(([title,meta]) => <button key={title} className="group flex w-full items-center gap-3 rounded-xl px-2 py-3 text-left hover:bg-white/[.035]"><span className="grid size-9 place-items-center rounded-xl bg-white/[.035] text-[#8f829a]"><FileText size={15}/></span><span className="min-w-0 flex-1"><span className="block truncate text-xs font-medium text-[#d6d1da]">{title}</span><span className="mt-1 block text-[10px] text-[#6f6875]">{meta}</span></span><ChevronRight size={13} className="text-[#4b464f] group-hover:text-[#918a97]"/></button>)}
+                  <span
+                    className={`h-10 w-0.5 rounded-full ${
+                      item.active ? "bg-emerald-400" : "bg-white/10"
+                    }`}
+                  />
+
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-[#e3e8e4]">
+                      {item.title}
+                    </p>
+
+                    <p className="mt-1 text-xs text-[#727973]">
+                      {item.detail}
+                    </p>
+                  </div>
+
+                  {item.active && (
+                    <span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-emerald-300">
+                      Next
+                    </span>
+                  )}
                 </div>
-                <button className="mt-3 w-full rounded-xl border border-white/[.07] py-2.5 text-[11px] text-[#8f8895] hover:bg-white/[.035] hover:text-white">Open Knowledge Center</button>
-              </section>
+              ))}
             </div>
-          </div>
+          </section>
         </div>
-      </main>
-    </div>
+
+        <div className="mt-6 grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
+          <section className="panel rounded-3xl p-6 sm:p-8">
+            <div className="flex items-center gap-3">
+              <span className="grid size-10 place-items-center rounded-xl bg-emerald-400/10 text-emerald-300">
+                <CheckCircle2 size={18} />
+              </span>
+
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#858b87]">
+                  Announcement
+                </p>
+
+                <h2 className="mt-1 text-xl font-semibold">
+                  Company update
+                </h2>
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-2xl border border-emerald-400/10 bg-emerald-400/[0.035] p-5">
+              <p className="text-sm font-medium text-[#e3e8e4]">
+                Founder&apos;s Day giving remains open through Sunday.
+              </p>
+
+              <p className="mt-2 text-xs leading-5 text-[#737a75]">
+                Continue directing contribution questions to the official
+                support inbox.
+              </p>
+            </div>
+          </section>
+
+          <section className="panel rounded-3xl p-6 sm:p-8">
+            <div className="flex items-center gap-3">
+              <span className="grid size-10 place-items-center rounded-xl bg-emerald-400/10 text-emerald-300">
+                <FileText size={18} />
+              </span>
+
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#858b87]">
+                  Knowledge Center
+                </p>
+
+                <h2 className="mt-1 text-xl font-semibold">
+                  Recently updated
+                </h2>
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-3 sm:grid-cols-3">
+              {recentUpdates.map((item) => (
+                <button
+                  key={item.title}
+                  className="group rounded-2xl border border-white/[0.06] bg-white/[0.018] p-5 text-left transition hover:border-emerald-400/20 hover:bg-emerald-400/[0.035]"
+                >
+                  <p className="text-sm font-medium text-[#e2e6e3]">
+                    {item.title}
+                  </p>
+
+                  <p className="mt-2 text-xs text-[#707772]">
+                    {item.type}
+                  </p>
+
+                  <ArrowRight
+                    size={15}
+                    className="mt-5 text-[#505752] transition group-hover:translate-x-1 group-hover:text-emerald-300"
+                  />
+                </button>
+              ))}
+            </div>
+          </section>
+        </div>
+      </div>
+    </AppShell>
   );
 }
