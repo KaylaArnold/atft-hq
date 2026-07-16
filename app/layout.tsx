@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { HQProvider } from "@/context/HQContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -6,10 +7,16 @@ export const metadata: Metadata = {
   description: "The operating system for Arletta The Friendly Trader.",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <HQProvider>{children}</HQProvider>
+      </body>
     </html>
   );
 }

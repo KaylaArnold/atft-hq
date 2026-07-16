@@ -114,61 +114,71 @@ export default function ATFTAcademyPage() {
           <section className="panel rounded-3xl p-6 sm:p-8">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#858b87]">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#89938c]">
                   Today&apos;s Snapshot
                 </p>
 
-                <h2 className="mt-2 text-2xl font-semibold tracking-[-0.03em]">
+                <h2 className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-[#17201a]">
                   Mini Drippers
                 </h2>
 
-                <p className="mt-2 text-sm text-[#818783]">
+                <p className="mt-2 text-sm text-[#667169]">
                   July–December 2026 cohort
                 </p>
               </div>
 
-              <span className="w-fit rounded-full border border-emerald-400/15 bg-emerald-400/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-300">
+              <span className="w-fit rounded-full border border-emerald-700/15 bg-emerald-700/[0.07] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-700">
                 Active
               </span>
             </div>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.025] p-5">
-                <p className="text-xs text-[#7e8580]">Current Cohort</p>
-                <p className="mt-2 text-lg font-semibold">Mini Drippers</p>
-                <p className="mt-1 text-xs text-[#656c67]">
-                  July–December 2026
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.025] p-5">
-                <p className="text-xs text-[#7e8580]">Today&apos;s Live</p>
-                <p className="mt-2 text-lg font-semibold">10:30 AM</p>
-                <p className="mt-1 text-xs text-[#656c67]">Coach Arletta</p>
-              </div>
-
-              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.025] p-5">
-                <p className="text-xs text-[#7e8580]">Members</p>
-                <p className="mt-2 text-lg font-semibold">74</p>
-                <p className="mt-1 text-xs text-[#656c67]">Community access</p>
-              </div>
-
-              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.025] p-5">
-                <p className="text-xs text-[#7e8580]">Next Milestone</p>
-                <p className="mt-2 text-lg font-semibold">Graduation</p>
-                <p className="mt-1 text-xs text-[#656c67]">August 25, 2026</p>
-              </div>
+              {[
+                {
+                  label: "Current Cohort",
+                  value: "Mini Drippers",
+                  detail: "July–December 2026",
+                },
+                {
+                  label: "Today's Live",
+                  value: "10:30 AM",
+                  detail: "Coach Arletta",
+                },
+                {
+                  label: "Members",
+                  value: "74",
+                  detail: "Community access",
+                },
+                {
+                  label: "Next Milestone",
+                  value: "Graduation",
+                  detail: "August 25, 2026",
+                },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-2xl border border-[#e3e8e5] bg-[#fbfcfb] p-5"
+                >
+                  <p className="text-xs text-[#7d8880]">{item.label}</p>
+                  <p className="mt-2 text-lg font-semibold text-[#17201a]">
+                    {item.value}
+                  </p>
+                  <p className="mt-1 text-xs text-[#6f7a72]">
+                    {item.detail}
+                  </p>
+                </div>
+              ))}
             </div>
           </section>
 
           <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
             <section className="panel rounded-3xl p-6 sm:p-8">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#858b87]">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#89938c]">
                   Quick Access
                 </p>
 
-                <h2 className="mt-2 text-xl font-semibold">
+                <h2 className="mt-2 text-xl font-semibold text-[#17201a]">
                   Open an ATFT system
                 </h2>
               </div>
@@ -181,25 +191,25 @@ export default function ATFTAcademyPage() {
                     <a
                       key={item.title}
                       href={item.href}
-                      className="group flex items-center gap-4 rounded-2xl border border-white/[0.06] bg-white/[0.018] p-4 transition hover:border-emerald-400/20 hover:bg-emerald-400/[0.035]"
+                      className="group flex items-center gap-4 rounded-2xl border border-[#e3e8e5] bg-[#fbfcfb] p-4 transition hover:border-emerald-700/20 hover:bg-white hover:shadow-sm"
                     >
-                      <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-emerald-400/10 text-emerald-300">
+                      <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-emerald-700/10 text-emerald-700">
                         <Icon size={19} strokeWidth={1.8} />
                       </span>
 
                       <span className="min-w-0 flex-1">
-                        <span className="block text-sm font-medium text-[#e4e8e5]">
+                        <span className="block text-sm font-medium text-[#2d3730]">
                           {item.title}
                         </span>
 
-                        <span className="mt-1 block text-xs leading-5 text-[#737a75]">
+                        <span className="mt-1 block text-xs leading-5 text-[#77827a]">
                           {item.description}
                         </span>
                       </span>
 
                       <ArrowRight
                         size={15}
-                        className="shrink-0 text-[#58605a] transition group-hover:translate-x-1 group-hover:text-emerald-300"
+                        className="shrink-0 text-[#98a19a] transition group-hover:translate-x-1 group-hover:text-emerald-700"
                       />
                     </a>
                   );
@@ -209,11 +219,11 @@ export default function ATFTAcademyPage() {
 
             <section className="panel rounded-3xl p-6 sm:p-8">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#858b87]">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#89938c]">
                   Today&apos;s Tasks
                 </p>
 
-                <h2 className="mt-2 text-xl font-semibold">
+                <h2 className="mt-2 text-xl font-semibold text-[#17201a]">
                   Keep the program moving
                 </h2>
               </div>
@@ -222,26 +232,27 @@ export default function ATFTAcademyPage() {
                 {tasks.map((task) => (
                   <button
                     key={task.title}
-                    className="group flex w-full items-start gap-3 rounded-2xl border border-transparent px-3 py-3 text-left transition hover:border-white/[0.05] hover:bg-white/[0.025]"
+                    type="button"
+                    className="group flex w-full items-start gap-3 rounded-2xl border border-transparent px-3 py-3 text-left transition hover:border-[#e3e8e5] hover:bg-[#fbfcfb]"
                   >
                     <CheckCircle2
                       size={18}
-                      className="mt-0.5 shrink-0 text-emerald-300"
+                      className="mt-0.5 shrink-0 text-emerald-700"
                     />
 
                     <span className="min-w-0 flex-1">
-                      <span className="block text-sm font-medium text-[#e2e6e3]">
+                      <span className="block text-sm font-medium text-[#2d3730]">
                         {task.title}
                       </span>
 
-                      <span className="mt-1 block text-xs leading-5 text-[#727973]">
+                      <span className="mt-1 block text-xs leading-5 text-[#77827a]">
                         {task.detail}
                       </span>
                     </span>
 
                     <ArrowRight
                       size={14}
-                      className="mt-1 shrink-0 text-[#505752] transition group-hover:translate-x-1 group-hover:text-emerald-300"
+                      className="mt-1 shrink-0 text-[#98a19a] transition group-hover:translate-x-1 group-hover:text-emerald-700"
                     />
                   </button>
                 ))}
@@ -251,16 +262,16 @@ export default function ATFTAcademyPage() {
 
           <section className="panel rounded-3xl p-6 sm:p-8">
             <div className="flex items-center gap-3">
-              <span className="grid size-10 place-items-center rounded-xl bg-emerald-400/10 text-emerald-300">
+              <span className="grid size-10 place-items-center rounded-xl bg-emerald-700/10 text-emerald-700">
                 <BookOpen size={18} />
               </span>
 
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#858b87]">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#89938c]">
                   Knowledge &amp; Resources
                 </p>
 
-                <h2 className="mt-1 text-xl font-semibold">
+                <h2 className="mt-1 text-xl font-semibold text-[#17201a]">
                   Program guidance
                 </h2>
               </div>
@@ -270,21 +281,22 @@ export default function ATFTAcademyPage() {
               {resources.map((resource) => (
                 <button
                   key={resource.title}
-                  className="group flex items-center justify-between rounded-2xl border border-white/[0.06] bg-white/[0.018] p-5 text-left transition hover:border-emerald-400/20 hover:bg-emerald-400/[0.035]"
+                  type="button"
+                  className="group flex items-center justify-between rounded-2xl border border-[#e3e8e5] bg-[#fbfcfb] p-5 text-left transition hover:border-emerald-700/20 hover:bg-white hover:shadow-sm"
                 >
                   <span>
-                    <span className="block text-sm font-medium text-[#e2e6e3]">
+                    <span className="block text-sm font-medium text-[#2d3730]">
                       {resource.title}
                     </span>
 
-                    <span className="mt-1 block text-xs text-[#707772]">
+                    <span className="mt-1 block text-xs text-[#77827a]">
                       {resource.type}
                     </span>
                   </span>
 
                   <ArrowRight
                     size={15}
-                    className="text-[#505752] transition group-hover:translate-x-1 group-hover:text-emerald-300"
+                    className="text-[#98a19a] transition group-hover:translate-x-1 group-hover:text-emerald-700"
                   />
                 </button>
               ))}

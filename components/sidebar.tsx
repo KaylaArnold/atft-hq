@@ -16,6 +16,7 @@ import {
   UsersRound,
   X,
 } from "lucide-react";
+import { useHQ } from "@/context/HQContext";
 import { cn } from "@/lib/utils";
 
 const primary = [
@@ -37,50 +38,58 @@ type SidebarProps = {
 
 export function Sidebar({ open, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const { tickets } = useHQ();
+
+  const openTicketCount = tickets.filter(
+    (ticket) => ticket.status !== "Resolved"
+  ).length;
 
   return (
     <>
       {open && (
         <button
+          type="button"
           aria-label="Close menu"
           onClick={onClose}
-          className="fixed inset-0 z-30 bg-black/60 lg:hidden"
+          className="fixed inset-0 z-30 bg-black/35 lg:hidden"
         />
       )}
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex w-[270px] flex-col border-r border-white/[0.06] bg-[#080b09]/95 p-4 backdrop-blur-xl transition-transform lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-40 flex w-[270px] flex-col border-r border-black/10 bg-[#17221c] p-4 shadow-[8px_0_30px_rgba(15,23,18,0.06)] transition-transform lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <div className="flex h-16 items-center justify-between px-2">
           <div className="flex items-center gap-3">
-            <div className="grid size-10 place-items-center rounded-2xl border border-emerald-400/20 bg-emerald-400/10 text-sm font-black tracking-tight text-emerald-300">
+            <div className="grid size-10 place-items-center rounded-2xl border border-emerald-300/20 bg-emerald-300/10 text-sm font-black tracking-tight text-emerald-200">
               A
             </div>
 
             <div>
-              <p className="m-0 text-[15px] font-semibold tracking-tight text-[#eef2ef]">
+              <p className="m-0 text-[15px] font-semibold tracking-tight text-white">
                 ATFT HQ
               </p>
 
-              <p className="m-0 mt-0.5 text-[10px] uppercase tracking-[0.18em] text-[#677069]">
+              <p className="m-0 mt-0.5 text-[10px] uppercase tracking-[0.18em] text-[#8e9a91]">
                 Operations
               </p>
             </div>
           </div>
 
           <button
+            type="button"
             onClick={onClose}
-            className="rounded-xl p-2 text-[#6f7771] transition hover:bg-white/[0.04] hover:text-white lg:hidden"
+            aria-label="Close navigation"
+            className="rounded-xl p-2 text-[#8e9a91] transition hover:bg-white/[0.06] hover:text-white lg:hidden"
           >
             <X size={18} />
           </button>
         </div>
 
         <nav className="mt-5 flex-1 overflow-y-auto scrollbar-none">
-          <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#566058]">
+          <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9eaaa2]">
             Workspace
           </p>
 
@@ -97,16 +106,26 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                   className={cn(
                     "group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition",
                     isActive
-                      ? "bg-emerald-400/10 text-emerald-300"
-                      : "text-[#8b938d] hover:bg-white/[0.035] hover:text-white"
+                      ? "bg-emerald-300/14 text-white"
+                      : "text-[#d2d9d4] hover:bg-white/[0.07] hover:text-white"
                   )}
                 >
-                  <Icon size={17} strokeWidth={1.8} />
+                  <Icon
+                    size={17}
+                    strokeWidth={1.8}
+                    className={cn(
+                      "transition",
+                      isActive
+                        ? "text-emerald-300"
+                        : "text-[#7f8a82] group-hover:text-white"
+                    )}
+                  />
+
                   <span className="flex-1">{label}</span>
 
-                  {label === "Member Care" && (
-                    <span className="rounded-full bg-emerald-400/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-300">
-                      2
+                  {label === "Member Care" && openTicketCount > 0 && (
+                    <span className="rounded-full bg-emerald-300/12 px-2 py-0.5 text-[10px] font-semibold text-emerald-200">
+                      {openTicketCount}
                     </span>
                   )}
                 </Link>
@@ -115,41 +134,44 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           </div>
         </nav>
 
-        <div className="rounded-2xl border border-emerald-400/12 bg-emerald-400/[0.045] p-3.5">
+        <div className="rounded-2xl border border-emerald-300/12 bg-emerald-300/[0.055] p-3.5">
           <div className="flex gap-3">
-            <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-emerald-400/10 text-emerald-300">
+            <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-emerald-300/10 text-emerald-200">
               <Sparkles size={15} />
             </span>
 
             <div>
-              <p className="m-0 text-xs font-medium text-[#e5e9e6]">
+              <p className="m-0 text-xs font-medium text-white">
                 HQ Assistant
               </p>
 
-              <p className="m-0 mt-1 text-[11px] leading-4 text-[#737c75]">
+              <p className="m-0 mt-1 text-[11px] leading-4 text-[#8f9a92]">
                 AI-powered company knowledge is coming later.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="mt-3 flex items-center gap-3 rounded-2xl p-2 transition hover:bg-white/[0.035]">
-          <div className="grid size-9 place-items-center rounded-full bg-emerald-400/15 text-xs font-bold text-emerald-300">
+        <button
+          type="button"
+          className="mt-3 flex w-full items-center gap-3 rounded-2xl p-2 text-left transition hover:bg-white/[0.055]"
+        >
+          <div className="grid size-9 place-items-center rounded-full bg-emerald-300/12 text-xs font-bold text-emerald-200">
             KA
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="m-0 truncate text-xs font-medium text-[#edf1ee]">
+            <p className="m-0 truncate text-xs font-medium text-white">
               Kayla Arnold
             </p>
 
-            <p className="m-0 mt-0.5 truncate text-[11px] text-[#6f7871]">
+            <p className="m-0 mt-0.5 truncate text-[11px] text-[#8d9890]">
               COO · Administrator
             </p>
           </div>
 
-          <ChevronDown size={14} className="text-[#6f7871]" />
-        </div>
+          <ChevronDown size={14} className="text-[#7f8a82]" />
+        </button>
       </aside>
     </>
   );

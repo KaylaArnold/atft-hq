@@ -16,11 +16,11 @@ export default function TemplatePicker({
 }: TemplatePickerProps) {
   return (
     <section>
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#7d857f]">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#89938c]">
         Reply Templates
       </p>
 
-      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+      <div className="mt-3 grid gap-4 sm:grid-cols-2">
         {templates.map((template) => {
           const selected = selectedTemplateId === template.id;
 
@@ -31,33 +31,35 @@ export default function TemplatePicker({
               onClick={() => onSelect(template)}
               className={
                 selected
-                  ? "rounded-2xl border border-emerald-400/25 bg-emerald-400/[0.07] p-4 text-left"
-                  : "rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4 text-left transition hover:border-emerald-400/20 hover:bg-emerald-400/[0.035]"
+                  ? "rounded-2xl border border-emerald-700/20 bg-emerald-50 p-5 text-left shadow-sm transition"
+                  : "rounded-2xl border border-[#e3e8e5] bg-white p-5 text-left transition hover:-translate-y-0.5 hover:border-emerald-700/20 hover:shadow-sm"
               }
             >
-              <div className="flex items-start justify-between gap-3">
-                <span className="grid size-9 place-items-center rounded-xl bg-emerald-400/10 text-emerald-300">
-                  <FileText size={16} />
+              <div className="flex items-start justify-between">
+                <span className="grid size-10 place-items-center rounded-xl bg-emerald-700/10 text-emerald-700">
+                  <FileText size={17} />
                 </span>
 
                 {selected && (
-                  <Check size={16} className="text-emerald-300" />
+                  <span className="grid size-7 place-items-center rounded-full bg-emerald-700 text-white">
+                    <Check size={13} />
+                  </span>
                 )}
               </div>
 
-              <p className="mt-4 text-sm font-semibold">
+              <h3 className="mt-5 text-base font-semibold text-[#17201a]">
                 {template.title}
-              </p>
+              </h3>
 
-              <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-300">
+              <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-700">
                 {template.category}
               </p>
 
-              <p className="mt-2 text-xs leading-5 text-[#747d76]">
+              <p className="mt-3 text-sm leading-6 text-[#667169]">
                 {template.description}
               </p>
 
-              <p className="mt-3 text-[10px] text-[#5f6861]">
+              <p className="mt-4 text-[11px] text-[#8b958e]">
                 Used {template.usageCount} times
               </p>
             </button>

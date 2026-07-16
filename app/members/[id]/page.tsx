@@ -58,10 +58,10 @@ export default async function MemberProfilePage({
       <div className="mx-auto max-w-[1500px] px-4 py-8 sm:px-7 lg:px-9 lg:py-10">
         <Link
           href="/members"
-          className="mb-6 inline-flex items-center gap-2 text-sm text-[#7f8881] transition hover:text-emerald-300"
+          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-[var(--text-secondary)] transition hover:text-[var(--accent)]"
         >
           <ArrowLeft size={16} />
-          Back to Members
+          Back to Member Directory
         </Link>
 
         <PageHeader
@@ -71,7 +71,7 @@ export default async function MemberProfilePage({
         />
 
         <div className="mb-8 overflow-x-auto">
-          <nav className="inline-flex min-w-max rounded-2xl border border-white/[0.06] bg-white/[0.025] p-1">
+          <nav className="inline-flex min-w-max rounded-2xl border border-[var(--border)] bg-white p-1 shadow-sm">
             {tabs.map((item) => {
               const isActive = activeTab === item.value;
 
@@ -81,8 +81,8 @@ export default async function MemberProfilePage({
                   href={`/members/${member.id}?tab=${item.value}`}
                   className={
                     isActive
-                      ? "rounded-xl bg-emerald-400/15 px-5 py-2.5 text-sm font-medium text-emerald-300"
-                      : "rounded-xl px-5 py-2.5 text-sm font-medium text-[#808781] transition hover:bg-white/[0.03] hover:text-white"
+                      ? "rounded-xl bg-[var(--accent-soft)] px-5 py-2.5 text-sm font-semibold text-[var(--accent)]"
+                      : "rounded-xl px-5 py-2.5 text-sm font-medium text-[var(--text-secondary)] transition hover:bg-[var(--surface-soft)] hover:text-[var(--text)]"
                   }
                 >
                   {item.label}
@@ -96,13 +96,16 @@ export default async function MemberProfilePage({
           <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
             <section className="panel rounded-3xl p-6">
               <div className="flex items-start gap-4">
-                <div className="grid size-14 shrink-0 place-items-center rounded-full bg-emerald-400/10 text-base font-semibold text-emerald-300">
+                <div className="grid size-14 shrink-0 place-items-center rounded-full bg-[var(--accent-soft)] text-base font-semibold text-[var(--accent)]">
                   {initials}
                 </div>
 
                 <div>
-                  <h2 className="text-xl font-semibold">{member.name}</h2>
-                  <p className="mt-1 text-sm text-[#7f8881]">
+                  <h2 className="text-xl font-semibold text-[var(--text)]">
+                    {member.name}
+                  </h2>
+
+                  <p className="mt-1 text-sm text-[var(--text-secondary)]">
                     {member.program}
                   </p>
                 </div>
@@ -110,41 +113,41 @@ export default async function MemberProfilePage({
 
               <div className="mt-6 space-y-3">
                 <div className="flex items-center gap-3 text-sm">
-                  <Mail size={16} className="text-emerald-300" />
+                  <Mail size={16} className="text-[var(--accent)]" />
 
                   {member.email ? (
                     <a
                       href={`mailto:${member.email}`}
-                      className="truncate text-[#d0d7d2] hover:text-emerald-300"
+                      className="truncate text-[var(--text-secondary)] transition hover:text-[var(--accent)]"
                     >
                       {member.email}
                     </a>
                   ) : (
-                    <span className="text-[#6f7771]">
+                    <span className="text-[var(--text-muted)]">
                       No email on file
                     </span>
                   )}
                 </div>
 
                 <div className="flex items-center gap-3 text-sm">
-                  <Phone size={16} className="text-emerald-300" />
+                  <Phone size={16} className="text-[var(--accent)]" />
 
                   {member.phone ? (
                     <a
                       href={`tel:${member.phone}`}
-                      className="text-[#a6afa8] hover:text-emerald-300"
+                      className="text-[var(--text-secondary)] transition hover:text-[var(--accent)]"
                     >
                       {member.phone}
                     </a>
                   ) : (
-                    <span className="text-[#6f7771]">
+                    <span className="text-[var(--text-muted)]">
                       No phone number on file
                     </span>
                   )}
                 </div>
               </div>
 
-              <div className="mt-6 space-y-4 border-t border-white/[0.06] pt-6">
+              <div className="mt-6 space-y-4 border-t border-[var(--border)] pt-6">
                 <StatusRow
                   icon={ShieldCheck}
                   label="Community"
@@ -173,11 +176,11 @@ export default async function MemberProfilePage({
                 />
               </div>
 
-              <div className="mt-6 flex flex-wrap gap-2 border-t border-white/[0.06] pt-6">
+              <div className="mt-6 flex flex-wrap gap-2 border-t border-[var(--border)] pt-6">
                 {member.email && (
                   <a
                     href={`mailto:${member.email}`}
-                    className="rounded-xl border border-white/[0.06] px-3 py-2 text-xs transition hover:border-emerald-400/20 hover:bg-emerald-400/10 hover:text-emerald-300"
+                    className="rounded-xl border border-[var(--border)] bg-white px-3 py-2 text-xs font-medium text-[var(--text-secondary)] transition hover:border-[var(--accent)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent)]"
                   >
                     Email Member
                   </a>
@@ -186,7 +189,7 @@ export default async function MemberProfilePage({
                 {member.phone && (
                   <a
                     href={`tel:${member.phone}`}
-                    className="rounded-xl border border-white/[0.06] px-3 py-2 text-xs transition hover:border-emerald-400/20 hover:bg-emerald-400/10 hover:text-emerald-300"
+                    className="rounded-xl border border-[var(--border)] bg-white px-3 py-2 text-xs font-medium text-[var(--text-secondary)] transition hover:border-[var(--accent)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent)]"
                   >
                     Call Member
                   </a>
@@ -194,7 +197,7 @@ export default async function MemberProfilePage({
 
                 <Link
                   href={`/members/${member.id}?tab=notes`}
-                  className="flex items-center gap-2 rounded-xl border border-white/[0.06] px-3 py-2 text-xs transition hover:border-emerald-400/20 hover:bg-emerald-400/10 hover:text-emerald-300"
+                  className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white px-3 py-2 text-xs font-medium text-[var(--text-secondary)] transition hover:border-[var(--accent)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent)]"
                 >
                   <NotebookPen size={14} />
                   Add Note
@@ -203,11 +206,11 @@ export default async function MemberProfilePage({
             </section>
 
             <section className="panel rounded-3xl p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#858b87]">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
                 Recent Activity
               </p>
 
-              <h2 className="mt-2 text-xl font-semibold">
+              <h2 className="mt-2 text-xl font-semibold text-[var(--text)]">
                 Latest member updates
               </h2>
 
@@ -218,11 +221,11 @@ export default async function MemberProfilePage({
 
         {activeTab === "activity" && (
           <section className="panel rounded-3xl p-6 sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#858b87]">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
               Activity
             </p>
 
-            <h2 className="mt-2 text-xl font-semibold">
+            <h2 className="mt-2 text-xl font-semibold text-[var(--text)]">
               Complete member timeline
             </h2>
 
@@ -232,16 +235,16 @@ export default async function MemberProfilePage({
 
         {activeTab === "support" && (
           <section className="panel rounded-3xl p-6 sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#858b87]">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
               Support
             </p>
 
-            <h2 className="mt-2 text-xl font-semibold">
+            <h2 className="mt-2 text-xl font-semibold text-[var(--text)]">
               Support history
             </h2>
 
-            <div className="mt-6 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5">
-              <p className="text-sm text-[#9aa39c]">
+            <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] p-5">
+              <p className="text-sm text-[var(--text-secondary)]">
                 No support conversations have been added yet.
               </p>
             </div>
@@ -250,20 +253,23 @@ export default async function MemberProfilePage({
 
         {activeTab === "notes" && (
           <section className="panel rounded-3xl p-6 sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#858b87]">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
               Internal Notes
             </p>
 
-            <h2 className="mt-2 text-xl font-semibold">
+            <h2 className="mt-2 text-xl font-semibold text-[var(--text)]">
               Staff context
             </h2>
 
             <textarea
               placeholder="Add an internal note about this member..."
-              className="mt-6 min-h-40 w-full resize-y rounded-2xl border border-white/[0.07] bg-white/[0.025] p-4 text-sm outline-none transition placeholder:text-[#606861] focus:border-emerald-400/25"
+              className="mt-6 min-h-40 w-full resize-y rounded-2xl border border-[var(--border)] bg-white p-4 text-sm text-[var(--text)] outline-none transition placeholder:text-[var(--text-light)] focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-soft)]"
             />
 
-            <button className="mt-4 rounded-xl bg-emerald-400 px-4 py-2.5 text-xs font-semibold text-[#07110a] transition hover:bg-emerald-300">
+            <button
+              type="button"
+              className="mt-4 rounded-xl bg-[var(--accent)] px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-[var(--accent-hover)]"
+            >
               Save Note
             </button>
           </section>
@@ -272,25 +278,28 @@ export default async function MemberProfilePage({
         {activeTab === "files" && (
           <section className="panel rounded-3xl p-6 sm:p-8">
             <div className="flex items-center gap-3">
-              <FileText size={20} className="text-emerald-300" />
+              <FileText size={20} className="text-[var(--accent)]" />
 
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#858b87]">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
                   Files
                 </p>
 
-                <h2 className="mt-1 text-xl font-semibold">
+                <h2 className="mt-1 text-xl font-semibold text-[var(--text)]">
                   Member documents
                 </h2>
               </div>
             </div>
 
-            <div className="mt-6 rounded-2xl border border-dashed border-white/[0.1] p-8 text-center">
-              <p className="text-sm text-[#9aa39c]">
+            <div className="mt-6 rounded-2xl border border-dashed border-[var(--border-strong)] bg-[var(--surface-strong)] p-8 text-center">
+              <p className="text-sm text-[var(--text-secondary)]">
                 No files have been uploaded for this member.
               </p>
 
-              <button className="mt-4 rounded-xl border border-white/[0.07] px-4 py-2.5 text-xs transition hover:border-emerald-400/20 hover:bg-emerald-400/10 hover:text-emerald-300">
+              <button
+                type="button"
+                className="mt-4 rounded-xl border border-[var(--border)] bg-white px-4 py-2.5 text-xs font-medium text-[var(--text-secondary)] transition hover:border-[var(--accent)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent)]"
+              >
                 Upload File
               </button>
             </div>
@@ -316,17 +325,19 @@ function StatusRow({
 }: StatusRowProps) {
   return (
     <div className="flex items-center justify-between gap-4">
-      <span className="flex items-center gap-2 text-sm text-[#818a83]">
-        <Icon size={16} className="text-emerald-300" />
+      <span className="flex items-center gap-2 text-sm font-medium text-[var(--text-muted)]">
+        <Icon size={16} className="text-[var(--accent)]" />
         {label}
       </span>
 
       <span
-        className={
-          tone === "success"
-            ? "text-sm font-medium text-emerald-300"
-            : "text-sm font-medium text-amber-300"
-        }
+        className="text-sm font-semibold"
+        style={{
+          color:
+            tone === "success"
+              ? "var(--success)"
+              : "var(--warning)",
+        }}
       >
         {value}
       </span>
@@ -360,12 +371,17 @@ function ActivityTimeline() {
           key={`${item.title}-${item.date}`}
           className={
             item.active
-              ? "border-l border-emerald-400/30 pl-4"
-              : "border-l border-white/[0.08] pl-4"
+              ? "border-l-2 border-[var(--accent)] pl-4"
+              : "border-l-2 border-[var(--border-strong)] pl-4"
           }
         >
-          <p className="text-sm font-medium">{item.title}</p>
-          <p className="mt-1 text-xs text-[#717a73]">{item.date}</p>
+          <p className="text-sm font-medium text-[var(--text)]">
+            {item.title}
+          </p>
+
+          <p className="mt-1 text-xs text-[var(--text-muted)]">
+            {item.date}
+          </p>
         </div>
       ))}
     </div>

@@ -5,34 +5,87 @@ import type { SupportTicket } from "@/data/support";
 type TicketActionsProps = {
   ticket: SupportTicket;
   canSend: boolean;
+  onSend: () => void;
+  onResolve: () => void;
 };
 
 export default function TicketActions({
   ticket,
   canSend,
+  onSend,
+  onResolve,
 }: TicketActionsProps) {
   return (
-    <div className="flex flex-wrap items-center gap-2 border-t border-white/[0.06] pt-5">
+    <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-[#e5e9e6] pt-6">
       <button
         type="button"
         disabled={!canSend}
-        className="flex items-center gap-2 rounded-xl bg-emerald-400 px-4 py-2.5 text-xs font-semibold text-[#06110a] transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-40"
+        onClick={onSend}
+        className="
+          flex
+          items-center
+          gap-2
+          rounded-xl
+          bg-emerald-700
+          px-5
+          py-2.5
+          text-sm
+          font-semibold
+          text-white
+          shadow-sm
+          transition
+          hover:bg-emerald-800
+          disabled:cursor-not-allowed
+          disabled:opacity-40
+        "
       >
-        <Mail size={14} />
+        <Mail size={15} />
         Send Reply
       </button>
 
       <button
         type="button"
-        className="flex items-center gap-2 rounded-xl border border-white/[0.06] px-4 py-2.5 text-xs transition hover:border-emerald-400/20 hover:bg-emerald-400/10 hover:text-emerald-300"
+        onClick={onResolve}
+        className="
+          flex
+          items-center
+          gap-2
+          rounded-xl
+          border
+          border-[#dfe5e1]
+          bg-white
+          px-5
+          py-2.5
+          text-sm
+          font-medium
+          text-[#4f5b54]
+          transition
+          hover:border-emerald-700/20
+          hover:bg-emerald-50
+          hover:text-emerald-700
+        "
       >
-        <CheckCircle2 size={14} />
+        <CheckCircle2 size={15} />
         Mark Resolved
       </button>
 
       <Link
         href={`/members/${ticket.memberId}?tab=support`}
-        className="ml-auto flex items-center gap-2 text-sm font-medium text-emerald-300 transition hover:text-emerald-200"
+        className="
+          ml-auto
+          flex
+          items-center
+          gap-2
+          rounded-xl
+          px-3
+          py-2
+          text-sm
+          font-semibold
+          text-emerald-700
+          transition
+          hover:bg-emerald-50
+          hover:text-emerald-800
+        "
       >
         Open Member Workspace
         <ArrowRight size={15} />

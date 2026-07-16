@@ -11,7 +11,10 @@ import {
   UserRound,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import type { SupportTicket } from "@/data/support";
+import type {
+  SupportStatus, 
+  SupportTicket, 
+} from "@/data/support";
 import {
   replyTemplates,
   type ReplyTemplate,
@@ -22,9 +25,13 @@ import TemplatePicker from "./template-picker";
 
 type TicketViewProps = {
   ticket: SupportTicket;
+  onStatusChange: (status: SupportStatus) =>void;
 };
 
-export default function TicketView({ ticket }: TicketViewProps) {
+export default function TicketView({
+  ticket,
+  onStatusChange,
+}: TicketViewProps){
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
     null
   );
@@ -73,7 +80,7 @@ export default function TicketView({ ticket }: TicketViewProps) {
   return (
     <main className="min-w-0 border-b border-white/[0.06] xl:border-b-0 xl:border-r">
      <TicketMessage ticket={ticket} /> 
-      <div className="space-y-6 p-5 sm:p-6">
+      <div className="space-y-6 px-5 pb-5 pt-6 sm:px-6 sm:pb-6">
 
         {suggestedTemplate && (
           <AISuggestion
@@ -96,6 +103,11 @@ export default function TicketView({ ticket }: TicketViewProps) {
         <TicketActions
           ticket={ticket}
           canSend={Boolean(reply.trim())}
+          onSend={() => {
+            onStatusChange("Waiting on Member");
+            setReply("");
+          }}
+            onResolve={() => onStatusChange("Resolved")}
         />
       </div>
     </main>

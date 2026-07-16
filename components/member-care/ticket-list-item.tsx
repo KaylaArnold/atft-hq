@@ -11,48 +11,49 @@ export default function TicketListItem({
   selected,
   onSelect,
 }: TicketListItemProps) {
+  const statusClass =
+    ticket.status === "Needs Reply"
+      ? "border-amber-500/20 bg-amber-50 text-amber-700"
+      : ticket.status === "Waiting on Member"
+        ? "border-sky-500/20 bg-sky-50 text-sky-700"
+        : "border-emerald-600/20 bg-emerald-50 text-emerald-700";
+
   return (
     <button
       type="button"
       onClick={onSelect}
       className={
         selected
-          ? "w-full border-l-2 border-emerald-400 bg-emerald-400/[0.06] px-4 py-4 text-left"
-          : "w-full border-l-2 border-transparent px-4 py-4 text-left transition hover:bg-white/[0.025]"
+          ? "w-full border-l-2 border-emerald-700 bg-emerald-50/80 px-4 py-4 text-left transition"
+          : "w-full border-l-2 border-transparent px-4 py-4 text-left transition hover:bg-[#f7f9f8]"
       }
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-[#e5e9e6]">
+          <p className="truncate text-sm font-semibold text-[#17201a]">
             {ticket.memberName}
           </p>
 
-          <p className="mt-1 truncate text-xs text-[#788079]">
+          <p className="mt-1 truncate text-xs text-[#6f7a72]">
             {ticket.program}
           </p>
         </div>
 
-        <span className="shrink-0 text-[10px] text-[#697169]">
+        <span className="shrink-0 text-[10px] text-[#879089]">
           {ticket.receivedAt}
         </span>
       </div>
 
-      <p className="mt-3 truncate text-sm font-medium text-[#cdd3ce]">
+      <p className="mt-3 truncate text-sm font-medium text-[#2d3730]">
         {ticket.subject}
       </p>
 
-      <p className="mt-1 line-clamp-2 text-xs leading-5 text-[#737b74]">
+      <p className="mt-1 line-clamp-2 text-xs leading-5 text-[#667169]">
         {ticket.preview}
       </p>
 
       <span
-        className={
-          ticket.status === "Needs Reply"
-            ? "mt-3 inline-flex rounded-full border border-amber-400/15 bg-amber-400/10 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.1em] text-amber-300"
-            : ticket.status === "Waiting on Member"
-              ? "mt-3 inline-flex rounded-full border border-sky-400/15 bg-sky-400/10 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.1em] text-sky-300"
-              : "mt-3 inline-flex rounded-full border border-emerald-400/15 bg-emerald-400/10 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.1em] text-emerald-300"
-        }
+        className={`mt-3 inline-flex rounded-full border px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.1em] ${statusClass}`}
       >
         {ticket.status}
       </span>

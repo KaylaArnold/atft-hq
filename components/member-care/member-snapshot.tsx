@@ -30,27 +30,27 @@ export default function MemberSnapshot({
 
   return (
     <aside className="p-5 sm:p-6">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#7d857f]">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#89938c]">
         Member Snapshot
       </p>
 
       <div className="mt-5 flex items-start gap-3">
-        <span className="grid size-11 shrink-0 place-items-center rounded-full bg-emerald-400/10 text-sm font-semibold text-emerald-300">
+        <span className="grid size-11 shrink-0 place-items-center rounded-full bg-emerald-700/10 text-sm font-semibold text-emerald-700">
           {initials}
         </span>
 
         <div className="min-w-0">
-          <h3 className="truncate text-base font-semibold">
+          <h3 className="truncate text-base font-semibold text-[#17201a]">
             {ticket.memberName}
           </h3>
 
-          <p className="mt-1 text-xs text-[#737c75]">
+          <p className="mt-1 text-xs text-[#6f7a72]">
             {ticket.program}
           </p>
         </div>
       </div>
 
-      <div className="mt-6 space-y-4 border-t border-white/[0.06] pt-6">
+      <div className="mt-6 space-y-4 border-t border-[#e5e9e6] pt-6">
         <SnapshotRow
           icon={ShieldCheck}
           label="Community"
@@ -61,9 +61,7 @@ export default function MemberSnapshot({
                 : "No Access"
               : "Unknown"
           }
-          tone={
-            member?.community ? "success" : "warning"
-          }
+          tone={member?.community ? "success" : "warning"}
         />
 
         <SnapshotRow
@@ -97,12 +95,12 @@ export default function MemberSnapshot({
       </div>
 
       <ActivityTimeline />
-      
-      <div className="mt-6 space-y-2 border-t border-white/[0.06] pt-6">
+
+      <div className="mt-6 space-y-2 border-t border-[#e5e9e6] pt-6">
         {member?.email && (
           <a
             href={`mailto:${member.email}`}
-            className="flex items-center gap-2 rounded-xl border border-white/[0.06] px-3 py-2.5 text-xs transition hover:border-emerald-400/20 hover:bg-emerald-400/10 hover:text-emerald-300"
+            className="flex items-center gap-2 rounded-xl border border-[#dfe5e1] bg-white px-3 py-2.5 text-xs font-medium text-[#4f5b54] transition hover:border-emerald-700/20 hover:bg-emerald-50 hover:text-emerald-700"
           >
             <Mail size={14} />
             Email Member
@@ -112,7 +110,7 @@ export default function MemberSnapshot({
         {member?.phone && (
           <a
             href={`tel:${member.phone}`}
-            className="flex items-center gap-2 rounded-xl border border-white/[0.06] px-3 py-2.5 text-xs transition hover:border-emerald-400/20 hover:bg-emerald-400/10 hover:text-emerald-300"
+            className="flex items-center gap-2 rounded-xl border border-[#dfe5e1] bg-white px-3 py-2.5 text-xs font-medium text-[#4f5b54] transition hover:border-emerald-700/20 hover:bg-emerald-50 hover:text-emerald-700"
           >
             <Phone size={14} />
             Call Member
@@ -121,7 +119,7 @@ export default function MemberSnapshot({
 
         <Link
           href={`/members/${ticket.memberId}?tab=support`}
-          className="flex items-center justify-between rounded-xl border border-white/[0.06] px-3 py-2.5 text-xs transition hover:border-emerald-400/20 hover:bg-emerald-400/10 hover:text-emerald-300"
+          className="flex items-center justify-between rounded-xl border border-[#dfe5e1] bg-white px-3 py-2.5 text-xs font-medium text-[#4f5b54] transition hover:border-emerald-700/20 hover:bg-emerald-50 hover:text-emerald-700"
         >
           Open Full Workspace
           <ArrowRight size={14} />
@@ -144,22 +142,21 @@ function SnapshotRow({
   value,
   tone,
 }: SnapshotRowProps) {
+  const valueClass =
+    tone === "success"
+      ? "text-emerald-700"
+      : tone === "warning"
+        ? "text-amber-700"
+        : "text-[#2d3730]";
+
   return (
-    <div>
-      <div className="flex items-center gap-2 text-xs text-[#747d76]">
-        <Icon size={14} className="text-emerald-300" />
+    <div className="rounded-xl bg-[#f8faf9] px-3 py-3">
+      <div className="flex items-center gap-2 text-xs text-[#748078]">
+        <Icon size={14} className="text-emerald-700" />
         {label}
       </div>
 
-      <p
-        className={
-          tone === "success"
-            ? "mt-1 text-sm font-medium text-emerald-300"
-            : tone === "warning"
-              ? "mt-1 text-sm font-medium text-amber-300"
-              : "mt-1 text-sm font-medium text-[#d8ddd9]"
-        }
-      >
+      <p className={`mt-1 text-sm font-semibold ${valueClass}`}>
         {value}
       </p>
     </div>
