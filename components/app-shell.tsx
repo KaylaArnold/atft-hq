@@ -1,5 +1,3 @@
-"use client";
-
 import { ReactNode, useState } from "react";
 import { Bell, Command, Menu, Search } from "lucide-react";
 import { Sidebar } from "./sidebar";
@@ -19,29 +17,41 @@ export default function AppShell({ children }: AppShellProps) {
       <CommandPalette open={command} onOpenChange={setCommand} />
 
       <main className="min-h-screen lg:pl-[270px]">
-        <header className="sticky top-0 z-20 flex h-[76px] items-center gap-3 border-b border-white/[.06] bg-[#070a09]/85 px-4 backdrop-blur-xl sm:px-7 lg:px-9">
+        <header className="sticky top-0 z-20 flex h-[76px] items-center gap-3 border-b border-black/[0.07] bg-white/85 px-4 backdrop-blur-xl sm:px-7 lg:px-9">
           <button
+            type="button"
             onClick={() => setMenu(true)}
-            className="rounded-xl p-2 text-[#a9a3b1] hover:bg-white/5 lg:hidden"
+            aria-label="Open navigation"
+            className="rounded-xl p-2 text-[#657168] transition hover:bg-black/[0.04] hover:text-[#162019] lg:hidden"
           >
-            <Menu size={20} />
+            <Menu size={18} />
           </button>
 
           <button
+            type="button"
             onClick={() => setCommand(true)}
-            className="flex h-10 w-full max-w-md items-center gap-2.5 rounded-xl border border-white/[.08] bg-white/[.025] px-3 text-left text-xs text-[#716b78] hover:border-white/[.13] hover:bg-white/[.04]"
+            className="flex h-10 w-full max-w-md items-center gap-2.5 rounded-xl border border-black/[0.08] bg-[#f8faf9] px-3 text-left text-xs text-[#77827a] transition hover:border-emerald-700/20 hover:bg-white"
           >
             <Search size={15} />
-            <span className="flex-1">Search ATFT HQ...</span>
 
-            <span className="hidden items-center gap-1 rounded-md border border-white/[.08] bg-black/20 px-1.5 py-1 text-[10px] sm:flex">
-              <Command size={10} /> K
+            <span className="flex-1">
+              Search ATFT HQ...
+            </span>
+
+            <span className="hidden items-center gap-1 rounded-md border border-black/[0.08] bg-white px-1.5 py-1 text-[10px] text-[#667168] shadow-sm sm:flex">
+              <Command size={10} />
+              K
             </span>
           </button>
 
-          <button className="relative ml-auto grid size-10 place-items-center rounded-xl border border-white/[.07] bg-white/[.025] text-[#a9a3b1] hover:bg-white/[.05]">
+          <button
+            type="button"
+            aria-label="Open notifications"
+            className="relative ml-auto grid size-10 shrink-0 place-items-center rounded-xl border border-black/[0.08] bg-white text-[#657168] shadow-sm transition hover:border-emerald-700/20 hover:bg-[#f8faf9] hover:text-[#162019]"
+          >
             <Bell size={17} />
-            <span className="absolute right-2.5 top-2.5 size-1.5 rounded-full bg-emerald-400" />
+
+            <span className="absolute right-2.5 top-2.5 size-1.5 rounded-full bg-emerald-600" />
           </button>
         </header>
 

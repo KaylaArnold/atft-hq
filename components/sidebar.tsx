@@ -23,7 +23,7 @@ const primary = [
   { label: "Members", href: "/members", icon: UsersRound },
   { label: "Programs", href: "/programs", icon: GraduationCap },
   { label: "Events", href: "/events", icon: Ticket },
-  { label: "Support", href: "/support", icon: LifeBuoy },
+  { label: "Member Care", href: "/member-care", icon: LifeBuoy },
   { label: "Operations", href: "/operations", icon: BookOpenCheck },
   { label: "Analytics", href: "/analytics", icon: BarChart3 },
   { label: "Calendar", href: "/calendar", icon: CalendarDays },
@@ -104,7 +104,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                   <Icon size={17} strokeWidth={1.8} />
                   <span className="flex-1">{label}</span>
 
-                  {label === "Support" && (
+                  {label === "Member Care" && (
                     <span className="rounded-full bg-emerald-400/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-300">
                       2
                     </span>

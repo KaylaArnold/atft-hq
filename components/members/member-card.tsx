@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   ArrowRight,
   Mail,
@@ -193,17 +194,13 @@ export default function MemberCard({ member }: MemberCardProps) {
               Notes
             </button>
 
-            <button
-              type="button"
-              aria-label={`Open ${member.name}'s member profile`}
+            <Link
+              href={`/members/${member.id}`}
               className="ml-auto flex items-center gap-2 text-sm font-medium text-emerald-300 transition hover:text-emerald-200"
             >
               View Profile
-              <ArrowRight
-                size={15}
-                className="transition group-hover:translate-x-1"
-              />
-            </button>
+              <ArrowRight size={15} />
+            </Link>
           </div>
         </div>
       </div>

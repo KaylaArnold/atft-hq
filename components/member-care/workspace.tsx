@@ -1,0 +1,43 @@
+"use client";
+
+import { useState } from "react";
+import { supportTickets } from "@/data/support";
+import TicketList from "./ticket-list";
+import TicketView from "./ticket-view";
+import MemberSnapshot from "./member-snapshot";
+
+export default function Workspace() {
+  const [selectedTicketId, setSelectedTicketId] = useState(
+    supportTickets[0]?.id ?? null
+  );
+
+  const selectedTicket =
+    supportTickets.find((ticket) => ticket.id === selectedTicketId) ??
+    supportTickets[0];
+
+  if (!selectedTicket) {
+    return (
+      <section className="panel rounded-3xl p-8 text-center">
+        <p className="text-sm text-[#8c958e]">
+          No member-care tickets are available.
+        </p>
+      </section>
+    );
+  }
+
+  return (
+    <section className="panel overflow-hidden rounded-3xl">
+      <div className="grid min-h-[720px] xl:grid-cols-[320px_minmax(0,1fr)_300px]">
+        <TicketList
+          tickets={supportTickets}
+          selectedTicketId={selectedTicket.id}
+          onSelectTicket={setSelectedTicketId}
+        />
+
+        <TicketView ticket={selectedTicket} />
+
+        <MemberSnapshot ticket={selectedTicket} />
+      </div>
+    </section>
+  );
+}
