@@ -2,11 +2,15 @@ import type { LucideIcon } from "lucide-react";
 import {
   BookOpenCheck,
   HeartHandshake,
-  TrendingUp,
   Landmark,
+  TrendingUp,
 } from "lucide-react";
 
-export type ProgramStatus = "Active" | "Planned" | "Application Only" | "Invitation Only";
+export type ProgramStatus =
+  | "Active"
+  | "Planned"
+  | "Application Only"
+  | "Invitation Only";
 
 export type Program = {
   id: string;
@@ -19,14 +23,7 @@ export type Program = {
   audience: string;
   investment: string;
   status: ProgramStatus;
-  
   workspaceHref: string;
-
-  communityUrl?: string;
-  replayUrl?: string;
-  paymentUrl?: string;
-  enrollmentUrl?: string;
-  
   icon: LucideIcon;
 };
 

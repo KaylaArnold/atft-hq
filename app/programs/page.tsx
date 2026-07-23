@@ -5,38 +5,55 @@ import { programs } from "@/data/programs";
 
 export default function ProgramsPage() {
   return (
-    <AppShell>
-      <div className="mx-auto max-w-[1500px] px-4 py-8 sm:px-7 lg:px-9 lg:py-10">
-        <PageHeader
-          eyebrow="The ATFT Journey"
-          title="Programs"
-          description="A progression from learning how to trade to building, protecting, and transferring generational wealth."
-        />
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium text-[var(--text-muted)]">
+            Programs
+          </p>
 
-        <div className="space-y-12">
-          {programs.map((program) => (
-            <section key={program.id}>
-              <div className="mb-5 flex items-center gap-4">
-                <div className="flex size-10 items-center justify-center rounded-full border border-emerald-700/15 bg-emerald-700/[0.07] text-sm font-bold text-emerald-700">
-                  {program.level}
-                </div>
+          <h1 className="mt-1 text-3xl font-bold tracking-tight">
+            Program Management
+          </h1>
 
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">
-                    {program.stage}
-                  </p>
-
-                  <h2 className="mt-1 text-2xl font-semibold tracking-[-0.03em] text-[#17201a]">
-                    {program.title}
-                  </h2>
-                </div>
-              </div>
-
-              <ProgramCard program={program} />
-            </section>
-          ))}
+          <p className="mt-2 text-[var(--text-muted)]">
+            Manage all ATFT programs, enrollments, coaches, and operations.
+          </p>
         </div>
+
+        <button className="rounded-xl bg-[var(--accent)] px-4 py-2 font-medium text-white transition hover:opacity-90">
+          + New Program
+        </button>
       </div>
-    </AppShell>
+
+      <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <StatCard title="Active Programs" value="8" />
+        <StatCard title="Active Students" value="212" />
+        <StatCard title="Monthly Revenue" value="$26,842" />
+        <StatCard title="Open Enrollment" value="2" />
+      </section>
+
+      <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-3"></section>
+    </div>
+  );
+}
+
+function StatCard({
+  title,
+  value,
+}: {
+  title: string;
+  value: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+      <p className="text-sm text-[var(--text-muted)]">
+        {title}
+      </p>
+
+      <p className="mt-3 text-3xl font-bold">
+        {value}
+      </p>
+    </div>
   );
 }

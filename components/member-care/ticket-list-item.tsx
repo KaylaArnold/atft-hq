@@ -1,3 +1,5 @@
+import { UserRound } from "lucide-react";
+
 import type { SupportTicket } from "@/data/support";
 
 type TicketListItemProps = {
@@ -52,11 +54,18 @@ export default function TicketListItem({
         {ticket.preview}
       </p>
 
-      <span
-        className={`mt-3 inline-flex rounded-full border px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.1em] ${statusClass}`}
-      >
-        {ticket.status}
-      </span>
+      <div className="mt-3 flex items-center justify-between gap-3">
+        <span
+          className={`inline-flex rounded-full border px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.1em] ${statusClass}`}
+        >
+          {ticket.status}
+        </span>
+
+        <div className="flex items-center gap-1 text-[11px] text-[#6f7a72]">
+          <UserRound size={12} />
+          <span>{ticket.assignedTo ?? "Unassigned"}</span>
+        </div>
+      </div>
     </button>
   );
 }

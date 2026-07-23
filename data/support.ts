@@ -13,6 +13,7 @@ export type SupportTicket = {
   body: string | null;
   program: string;
   status: SupportStatus;
+  assignedTo: string | null;
   receivedAt: string;
 };
 
@@ -29,6 +30,7 @@ export const supportTickets: SupportTicket[] = [
       "Good morning, I'm having difficulty joining the live sessions. I have refreshed the app several times...",
     program: "Mini Drippers",
     status: "Needs Reply",
+    assignedTo: null,
     receivedAt: "21 minutes ago",
   },
   {
@@ -42,6 +44,7 @@ export const supportTickets: SupportTicket[] = [
     body: null,
     program: "Mini Drippers",
     status: "Waiting on Member",
+    assignedTo: null,
     receivedAt: "Yesterday", 
   },
   {
@@ -54,6 +57,7 @@ export const supportTickets: SupportTicket[] = [
       "I recently enrolled but I am not receiving the emails related to the new class.",
     body: null,
     program: "Mini Drippers",
+    assignedTo: null,
     status: "Resolved",
     receivedAt: "July 14", 
   },

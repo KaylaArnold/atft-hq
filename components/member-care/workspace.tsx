@@ -1,81 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import { useHQ } from "@/context/HQContext";
-import TicketList from "./ticket-list";
-import TicketView from "./ticket-view";
-import MemberSnapshot from "./member-snapshot";
+import { useRouter } from "next/navigation";
 
-export type SentReply = {
-  body: string;
-  sentAt: string;
-};
+import { useHQ } from "@/context/HQContext";
+import TicketList, {
+  type TicketViewFilter,
+} from "./ticket-list";
 
 export default function Workspace() {
-  const { tickets, updateTicketStatus } = useHQ();
+  const router = useRouter();
+  const { tickets } = useHQ();
 
-  const [selectedTicketId, setSelectedTicketId] = useState(
-    tickets[0]?.id ?? null
-  );
+  const [activeView, setActiveView] =
+    useState<TicketViewFilter>("open");
 
-  const [sentReplies, setSentReplies] = useState<
-    Record<string, SentReply>
-  >({});
-
-  const selectedTicket =
-    tickets.find((ticket) => ticket.id === selectedTicketId) ??
-    tickets[0];
-
-  function sendReply(ticketId: string, body: string) {
-    const trimmedBody = body.trim();
-
-    if (!trimmedBody) return;
-
-    setSentReplies((currentReplies) => ({
-      ...currentReplies,
-      [ticketId]: {
-        body: trimmedBody,
-        sentAt: new Date().toISOString(),
-      },
-    }));
-  }
-
-  if (!selectedTicket) {
-    return (
-      <section className="panel rounded-3xl p-8 text-center">
-<<<<<<< Updated upstream
-        <p className="text-sm text-[#667169]">
-=======
-        <p className="text-sm text-[var(--text-muted)]">
->>>>>>> Stashed changes
-          No member-care tickets are available.
-        </p>
-      </section>
-    );
+  function openTicket(ticketId: number) {
+    router.push(`/member-care/tickets/${ticketId}`);
   }
 
   return (
     <section className="panel overflow-hidden rounded-3xl">
-      <div className="grid min-h-[720px] xl:grid-cols-[320px_minmax(0,1fr)_300px]">
+      <div className="min-h-[720px]">
         <TicketList
           tickets={tickets}
-          selectedTicketId={selectedTicket.id}
-          onSelectTicket={setSelectedTicketId}
+          selectedTicketId={-1}
+          activeView={activeView}
+          onViewChange={setActiveView}
+          onSelectTicket={openTicket}
         />
-
-        <TicketView
-          ticket={selectedTicket}
-<<<<<<< Updated upstream
-          onStatusChange={(status) =>
-            updateTicketStatus(selectedTicket.id, status)
-          }
-=======
-          sentReply={sentReplies[selectedTicket.id]}
-          onSendReply={sendReply}
->>>>>>> Stashed changes
-        />
-
-        <MemberSnapshot ticket={selectedTicket} />
       </div>
     </section>
   );
