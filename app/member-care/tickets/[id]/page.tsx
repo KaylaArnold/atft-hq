@@ -11,17 +11,13 @@ import type { SupportStatus } from "@/data/support";
 
 export default function SupportTicketPage() {
   const params = useParams<{ id: string }>();
-
-  const {
-    tickets,
-    updateTicketStatus,
-  } = useHQ();
+  const { tickets, updateTicketStatus } = useHQ();
 
   const ticketId = Number(params.id);
 
-  const ticket = tickets.find(
-    (item) => item.id === ticketId
-  );
+  const ticket = Number.isNaN(ticketId)
+    ? undefined
+    : tickets.find((item) => item.id === ticketId);
 
   function handleStatusChange(status: SupportStatus) {
     if (!ticket) {
@@ -53,8 +49,8 @@ export default function SupportTicketPage() {
             </h1>
 
             <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[var(--text-muted)]">
-              This support ticket may have been removed, or the ticket link
-              may be incorrect.
+              This support ticket may have been removed, or the ticket link may
+              be incorrect.
             </p>
 
             <Link

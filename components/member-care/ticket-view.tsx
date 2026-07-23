@@ -191,9 +191,9 @@ export default function TicketView({
     setReply("");
     setSelectedTemplateId(null);
   }
-
+  
   return (
-    <main className="min-w-0 border-b border-[var(--border)] xl:border-b-0 xl:border-r">
+    <main className="min-w-0 rounded-3xl bg-[var(--surface)]">
       <TicketMessage 
         ticket={ticket}
         onStatusChange={onStatusChange}

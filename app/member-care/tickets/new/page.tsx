@@ -54,21 +54,23 @@ export default function NewSupportTicketPage() {
 
   useEffect(() => {
     if (createdTicketId === null) {
-        return;
+      return;
     }
 
     const ticketExists = tickets.some(
-        (ticket) => ticket.id === createdTicketId
+      (ticket) => ticket.id === createdTicketId
     );
 
     if (ticketExists) {
-        router.push(
-            `/member-care/tickets/${createdTicketId}`
-        );
+      router.push(
+        `/member-care/tickets/${createdTicketId}`
+      );
     }
   }, [createdTicketId, router, tickets]);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(
+    event: FormEvent<HTMLFormElement>
+  ) {
     event.preventDefault();
     setError("");
 
@@ -102,14 +104,13 @@ export default function NewSupportTicketPage() {
         memberName: selectedMember.name,
         email: selectedMember.email,
         program: selectedMember.program,
-        subject,
-        body: message,
+        subject: subject.trim(),
+        body: message.trim(),
         status,
         assignedTo: assignedTo || null,
       });
 
       setCreatedTicketId(newTicketId);
-
     } catch (submitError) {
       console.error(
         "Unable to create support ticket:",
@@ -181,9 +182,7 @@ export default function NewSupportTicketPage() {
                 }
                 className="mt-3 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--text)] outline-none transition focus:border-[var(--accent)]"
               >
-                <option value="">
-                  Select a member
-                </option>
+                <option value="">Select a member</option>
 
                 {members.map((member) => (
                   <option
@@ -280,8 +279,7 @@ export default function NewSupportTicketPage() {
                   value={status}
                   onChange={(event) =>
                     setStatus(
-                      event.target
-                        .value as SupportStatus
+                      event.target.value as SupportStatus
                     )
                   }
                   className="mt-3 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm text-[var(--text)] outline-none transition focus:border-[var(--accent)]"

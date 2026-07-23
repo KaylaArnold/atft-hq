@@ -1,17 +1,14 @@
+import Link from "next/link";
 import { UserRound } from "lucide-react";
 
 import type { SupportTicket } from "@/data/support";
 
 type TicketListItemProps = {
   ticket: SupportTicket;
-  selected: boolean;
-  onSelect: () => void;
 };
 
 export default function TicketListItem({
   ticket,
-  selected,
-  onSelect,
 }: TicketListItemProps) {
   const statusClass =
     ticket.status === "Needs Reply"
@@ -21,36 +18,31 @@ export default function TicketListItem({
         : "border-emerald-600/20 bg-emerald-50 text-emerald-700";
 
   return (
-    <button
-      type="button"
-      onClick={onSelect}
-      className={
-        selected
-          ? "w-full border-l-2 border-emerald-700 bg-emerald-50/80 px-4 py-4 text-left transition"
-          : "w-full border-l-2 border-transparent px-4 py-4 text-left transition hover:bg-[#f7f9f8]"
-      }
+    <Link
+      href={`/member-care/tickets/${ticket.id}`}
+      className="block w-full border-l-2 border-transparent px-4 py-4 text-left transition hover:border-[var(--accent)] hover:bg-[var(--surface-soft)] focus-visible:border-[var(--accent)] focus-visible:bg-[var(--surface-soft)] focus-visible:outline-none"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-[#17201a]">
+          <p className="truncate text-sm font-semibold text-[var(--text)]">
             {ticket.memberName}
           </p>
 
-          <p className="mt-1 truncate text-xs text-[#6f7a72]">
+          <p className="mt-1 truncate text-xs text-[var(--text-muted)]">
             {ticket.program}
           </p>
         </div>
 
-        <span className="shrink-0 text-[10px] text-[#879089]">
+        <span className="shrink-0 text-[10px] text-[var(--text-muted)]">
           {ticket.receivedAt}
         </span>
       </div>
 
-      <p className="mt-3 truncate text-sm font-medium text-[#2d3730]">
+      <p className="mt-3 truncate text-sm font-medium text-[var(--text-secondary)]">
         {ticket.subject}
       </p>
 
-      <p className="mt-1 line-clamp-2 text-xs leading-5 text-[#667169]">
+      <p className="mt-1 line-clamp-2 text-xs leading-5 text-[var(--text-muted)]">
         {ticket.preview}
       </p>
 
@@ -61,11 +53,11 @@ export default function TicketListItem({
           {ticket.status}
         </span>
 
-        <div className="flex items-center gap-1 text-[11px] text-[#6f7a72]">
+        <div className="flex items-center gap-1 text-[11px] text-[var(--text-muted)]">
           <UserRound size={12} />
           <span>{ticket.assignedTo ?? "Unassigned"}</span>
         </div>
       </div>
-    </button>
+    </Link>
   );
 }

@@ -105,17 +105,17 @@ export default function ATFTAcademyPage() {
         <PageHeader
           eyebrow="Foundation · Level 1"
           title="ATFT Academy"
-          description="Operations workspace for the current Mini Drippers cohort."
+          description="Manage today's operations for the current Mini Drippers cohort."
         />
 
-        <WorkspaceNav active="Overview" />
+        <WorkspaceNav active="Command Center" />
 
         <div className="space-y-6">
           <section className="panel rounded-3xl p-6 sm:p-8">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#89938c]">
-                  Today&apos;s Snapshot
+                  Today&apos;s Status 
                 </p>
 
                 <h2 className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-[#17201a]">
@@ -175,7 +175,7 @@ export default function ATFTAcademyPage() {
             <section className="panel rounded-3xl p-6 sm:p-8">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#89938c]">
-                  Quick Access
+                  Business Systems
                 </p>
 
                 <h2 className="mt-2 text-xl font-semibold text-[#17201a]">
@@ -220,7 +220,7 @@ export default function ATFTAcademyPage() {
             <section className="panel rounded-3xl p-6 sm:p-8">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#89938c]">
-                  Today&apos;s Tasks
+                  Today&apos;s Priorities
                 </p>
 
                 <h2 className="mt-2 text-xl font-semibold text-[#17201a]">
@@ -268,7 +268,7 @@ export default function ATFTAcademyPage() {
 
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#89938c]">
-                  Knowledge &amp; Resources
+                  Playbooks
                 </p>
 
                 <h2 className="mt-1 text-xl font-semibold text-[#17201a]">

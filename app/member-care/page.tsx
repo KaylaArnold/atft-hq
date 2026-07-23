@@ -8,7 +8,7 @@ import PageHeader from "@/components/ui/page-header";
 export default function MemberCarePage() {
   return (
     <AppShell>
-      <div className="mx-auto max-w-[1700px] px-4 py-8 sm:px-7 lg:px-9 lg:py-10">
+      <div className="mx-auto max-w-[1700px] space-y-8 px-4 py-8 sm:px-7 lg:px-9 lg:py-10">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <PageHeader
             eyebrow="Member Care"
