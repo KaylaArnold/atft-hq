@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { ArrowLeft, CircleAlert } from "lucide-react";
 
 import AppShell from "@/components/app-shell";
-import TicketView from "@/components/member-care/ticket-view";
+import TicketView from "@/components/support/ticket-view";
 import { useHQ } from "@/context/HQContext";
 import type { SupportStatus } from "@/data/support";
 

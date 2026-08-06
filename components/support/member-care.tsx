@@ -1,5 +1,5 @@
 import AppShell from "@/components/app-shell";
-import Workspace from "@/components/member-care/workspace";
+import Workspace from "@/components/support/support-workspace";
 import PageHeader from "@/components/ui/page-header";
 
 export default function MemberCarePage() {

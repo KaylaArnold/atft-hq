@@ -18,10 +18,10 @@ import {
   SectionCard,
   StatusBadge,
 } from "@/components/hq";
-import ProgramWorkspaceLayout from "@/components/program-workspace/ProgramWorkspaceLayout";
+import ProgramWorkspaceLayout from "@/components/programs/ProgramWorkspaceLayout";
 import { programs } from "@/data/programs";
 
-const academy = programs.find((program) => program.slug === "academy");
+const academy = programs.find((program) => program.id === "atft-academy");
 
 const operations = [
   {

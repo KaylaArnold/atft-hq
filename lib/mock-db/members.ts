@@ -1,11 +1,13 @@
-export const members = [
+import type { Member } from "@/lib/types/member";
+
+export const members: Member[] = [
   {
     id: 1,
     name: "Mary Longoria",
-    email:"missmary1984@yahoo.com",
-    phone:"(956)533-2841",
+    email: "missmary1984@yahoo.com",
+    phone: "(956)533-2841",
     program: "Mini Drippers",
-    community: true,
+    community: "Yes",
     payments: "Current",
     support: "None",
     status: "Active",
@@ -16,7 +18,7 @@ export const members = [
     email: null,
     phone: null,
     program: "Mini Drippers",
-    community: true,
+    community: "Yes",
     payments: "Current",
     support: "Waiting Reply",
     status: "Needs Attention",
@@ -27,9 +29,13 @@ export const members = [
     email: null,
     phone: null,
     program: "Mini Drippers",
-    community: true,
+    community: "Yes",
     payments: "Current",
     support: "Resolved",
     status: "Active",
   },
 ];
+
+export function getMemberById(memberId: number) {
+  return members.find((member) => member.id === memberId);
+}

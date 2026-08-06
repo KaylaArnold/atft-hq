@@ -21,11 +21,11 @@ import { cn } from "@/lib/utils";
 
 const primary = [
   { label: "Home", href: "/", icon: Home },
-  { label: "Members", href: "/members", icon: UsersRound },
   { label: "Programs", href: "/programs", icon: GraduationCap },
+  { label: "People", href: "/people", icon: UsersRound },
   { label: "Events", href: "/events", icon: Ticket },
   { label: "Member Care", href: "/member-care", icon: LifeBuoy },
-  { label: "Operations", href: "/operations", icon: BookOpenCheck },
+  { label: "Operations", href: "/programs/atft-academy/operations", icon: BookOpenCheck },
   { label: "Analytics", href: "/analytics", icon: BarChart3 },
   { label: "Calendar", href: "/calendar", icon: CalendarDays },
   { label: "Resources", href: "/resources", icon: FileStack },

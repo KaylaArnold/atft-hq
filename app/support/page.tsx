@@ -1,5 +1,5 @@
 import AppShell from "@/components/app-shell";
-import SupportTicketCard from "@/components/member-care/ticket-view";
+import SupportTicketCard from "@/components/support/ticket-view";
 import PageHeader from "@/components/ui/page-header";
 import { supportTickets } from "@/data/support";
 import {

@@ -1,16 +1,24 @@
+"use client";
+
+import { useState } from "react";
+
 import AppShell from "@/components/app-shell";
 import WorkspaceNav from "@/components/workspace-nav";
 import PageHeader from "@/components/ui/page-header";
+import MemberTable from "@/components/members/member-table";
+import EditMemberDrawer from "@/components/members/edit-member-drawer";
 
 import {
   ArrowRight,
   GraduationCap,
   Mail,
-  Search,
   ShieldCheck,
   UserCheck,
   Users,
 } from "lucide-react";
+import { useHQ } from "@/context/HQContext";
+
+type Member = ReturnType<typeof useHQ>["members"] extends Array<infer M> ? M : never;
 
 const peopleSummary = [
   {
@@ -40,13 +48,6 @@ const peopleSummary = [
 ];
 
 const peopleGroups = [
-  {
-    title: "Current Members",
-    description:
-      "View active students, enrollment status, community access, and cohort participation.",
-    count: "74 members",
-    icon: Users,
-  },
   {
     title: "Coaches & Staff",
     description:
@@ -82,7 +83,10 @@ const attentionItems = [
 ];
 
 export default function AcademyPeoplePage() {
-  return (
+    const { members, updateMember } = useHQ();
+    const [editingMember, setEditingMember] = useState<Member | null>(null);
+
+    return (
     <AppShell>
       <div className="mx-auto max-w-[1500px] px-4 py-8 sm:px-7 lg:px-9 lg:py-10">
         <PageHeader
@@ -127,37 +131,8 @@ export default function AcademyPeoplePage() {
             })}
           </section>
 
-          <section className="panel rounded-3xl p-6 sm:p-8">
-            <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#89938c]">
-                  People Directory
-                </p>
-
-                <h2 className="mt-2 text-xl font-semibold text-[#17201a]">
-                  Find an Academy member
-                </h2>
-
-                <p className="mt-2 text-sm leading-6 text-[#6f7a72]">
-                  Search by name, email address, cohort, or enrollment status.
-                </p>
-              </div>
-
-              <div className="relative w-full lg:max-w-md">
-                <Search
-                  size={17}
-                  className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#89938c]"
-                />
-
-                <input
-                  type="search"
-                  placeholder="Search people..."
-                  className="h-12 w-full rounded-2xl border border-[#e3e8e5] bg-[#fbfcfb] pl-11 pr-4 text-sm text-[#17201a] outline-none transition placeholder:text-[#98a19a] focus:border-emerald-700/30 focus:bg-white focus:ring-4 focus:ring-emerald-700/5"
-                />
-              </div>
-            </div>
-          </section>
-
+          <MemberTable members={members} />
+            
           <section className="grid gap-6 lg:grid-cols-3">
             {peopleGroups.map((group) => {
               const Icon = group.icon;

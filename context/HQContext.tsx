@@ -9,7 +9,8 @@ import {
   type ReactNode,
 } from "react";
 
-import { members as initialMembers } from "@/data/members";
+import { employees as initialEmployees } from "@/lib/mock-db/employees";
+import { members as initialMembers } from "@/lib/mock-db/members";
 import {
   supportTickets as initialTickets,
   type SupportStatus,
@@ -105,6 +106,8 @@ type HQContextType = {
 
   memberNotes: MemberNote[];
 
+  updateMember: (member: Member) => void;
+
   addMemberNote: (
     memberId: number,
     author: string,
@@ -118,11 +121,23 @@ type HQContextType = {
 
   deleteMemberNote: (id: number) => void;
 
+  employees: (typeof initialEmployees)[number][];
+
+  addEmployee: (
+    employee: (typeof initialEmployees)[number],
+  ) => void;
+
+  updateEmployee: (
+    employee: (typeof initialEmployees)[number],
+  ) => void;
+
   resetHQData: () => void;
 };
 
 const HQContext = createContext<HQContextType | null>(null);
 
+const MEMBERS_STORAGE_KEY = "atft-hq-members";
+const EMPLOYEES_STORAGE_KEY = "atft-hq-employees";
 const TICKETS_STORAGE_KEY = "atft-hq-support-tickets";
 const ACTIVITY_STORAGE_KEY = "atft-hq-ticket-activity";
 const LEGACY_NOTES_STORAGE_KEY = "atft-hq-ticket-notes";
@@ -155,9 +170,21 @@ export function HQProvider({
 }: {
   children: ReactNode;
 }) {
-  const [members] = useState<Member[]>([
+  const [members, setMembers] = useState<Member[]>([
     ...initialMembers,
   ]);
+
+  const [employees, setEmployees] = useState<
+    (typeof initialEmployees)[number][]
+  >([...initialEmployees]);
+
+  function updateMember(updatedMember: Member) {
+    setMembers((current) =>
+      current.map((member) =>
+        member.id === updatedMember.id ? updatedMember : member
+      )
+    );
+  }
 
   const [tickets, setTickets] = useState<Ticket[]>([
     ...initialTickets,
@@ -176,6 +203,15 @@ export function HQProvider({
 
   useEffect(() => {
     try {
+      const savedMembers = window.localStorage.getItem(
+        MEMBERS_STORAGE_KEY
+      );
+      
+      const savedEmployees =
+        window.localStorage.getItem(
+          EMPLOYEES_STORAGE_KEY,
+      );
+
       const savedTickets = window.localStorage.getItem(
         TICKETS_STORAGE_KEY
       );
@@ -187,6 +223,16 @@ export function HQProvider({
       const legacyNotes = window.localStorage.getItem(
         LEGACY_NOTES_STORAGE_KEY
       );
+
+      if (savedMembers) {
+        setMembers(JSON.parse(savedMembers)  as Member[]);
+      }
+
+      if (savedEmployees) {
+        setEmployees(
+          JSON.parse(savedEmployees),
+        );
+      }
 
       if (savedTickets) {
         setTickets(JSON.parse(savedTickets) as Ticket[]);
@@ -288,6 +334,30 @@ export function HQProvider({
       );
     }
   }, [tickets, ticketActivity, storageLoaded]);
+
+  useEffect(() => {
+    if (!storageLoaded) {
+      return;
+    }
+
+    try {
+      window.localStorage.setItem(
+        MEMBERS_STORAGE_KEY,
+        JSON.stringify(members)
+      );
+
+      window.localStorage.setItem(
+        EMPLOYEES_STORAGE_KEY,
+        JSON.stringify(employees),
+      );
+
+    } catch (error) {
+      console.error(
+        "Unable to save members:",
+        error
+      );
+    }
+  }, [members, employees, storageLoaded]);
 
   const ticketNotes = useMemo(() => {
     return Object.entries(ticketActivity).reduce<
@@ -568,7 +638,28 @@ export function HQProvider({
     );
   }
 
+  function addEmployee(employee: (typeof initialEmployees)[number]) {
+    setEmployees((current) => [
+      ...current,
+      employee,
+    ]);
+  }
+
+  function updateEmployee(
+    updateEmployeee: (typeof initialEmployees)[number],
+  ) {
+    setEmployees((current) =>
+      current.map((employee) =>
+        employee.id === updateEmployeee.id
+          ? updateEmployeee
+          : employee
+      ),
+    );
+  }
+
   function resetHQData() {
+    setMembers([...initialMembers]);
+    setEmployees([...initialEmployees]);
     setTickets([...initialTickets]);
     setTicketActivity({});
 
@@ -583,11 +674,25 @@ export function HQProvider({
     window.localStorage.removeItem(
       LEGACY_NOTES_STORAGE_KEY
     );
+
+    window.localStorage.removeItem(
+      MEMBERS_STORAGE_KEY
+    );
+
+    window.localStorage.removeItem(
+      EMPLOYEES_STORAGE_KEY
+    );
   }
 
   const value = useMemo(
     () => ({
       members,
+
+      employees,
+
+      addEmployee,
+
+      updateEmployee,
 
       tickets,
       ticketActivity,
@@ -602,6 +707,7 @@ export function HQProvider({
       addTicketReply,
 
       memberNotes,
+      updateMember,
       addMemberNote,
       updateMemberNote,
       deleteMemberNote,
@@ -610,6 +716,7 @@ export function HQProvider({
     }),
     [
       members,
+      employees,
       tickets,
       ticketActivity,
       ticketNotes,
