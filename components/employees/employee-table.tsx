@@ -10,6 +10,9 @@ import { useHQ } from "@/context/HQContext";
 export default function EmployeeTable() {
 const { employees, addEmployee } = useHQ();
 const [inviteOpen, setInviteOpen] = useState(false);
+const sortedEmployees = [...employees].sort((a, b) =>
+  a.name.localeCompare(b.name)
+); 
 
   return (
     <section className="overflow-hidden rounded-3xl border border-[var(--border)] bg-white shadow-sm">
@@ -57,7 +60,7 @@ const [inviteOpen, setInviteOpen] = useState(false);
 </div>
 
 <div>
-  {employees.map((employee) => (
+  {sortedEmployees.map((employee) => (
     <EmployeeRow
       key={employee.id}
       employee={employee}

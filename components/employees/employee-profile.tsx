@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -11,7 +15,8 @@ import {
 } from "lucide-react";
 
 import AppShell from "@/components/app-shell";
-import { employees } from "@/lib/mock-db/employees";
+import { useHQ } from "@/context/HQContext";
+import EditEmployeeDrawer from "./edit-employee-drawer";
 
 type EmployeeProfileProps = {
   employeeId: string;
@@ -20,6 +25,11 @@ type EmployeeProfileProps = {
 export default function EmployeeProfile({
   employeeId,
 }: EmployeeProfileProps) {
+
+  const [editOpen, setEditOpen] = useState(false);
+
+  const { employees, updateEmployee } = useHQ();
+
   const employee = employees.find(
     (currentEmployee) =>
       currentEmployee.id === Number(employeeId),
@@ -77,6 +87,7 @@ export default function EmployeeProfile({
 
             <button
               type="button"
+              onClick={() => setEditOpen(true)}
               className="shrink-0 rounded-xl border border-[#dfe5e1] bg-white px-4 py-2.5 text-sm font-semibold text-[#4d5850] transition hover:border-emerald-700/30 hover:text-emerald-700"
             >
               Edit Employee
@@ -165,6 +176,16 @@ export default function EmployeeProfile({
           </div>
         </section>
       </main>
+
+      <EditEmployeeDrawer
+        open={editOpen}
+        employee={employee}
+        onClose={() => setEditOpen(false)}
+        onSave={(updatedEmployee) => {
+          updateEmployee(updatedEmployee);
+          setEditOpen(false);
+        }}
+      />
     </AppShell>
   );
 }
