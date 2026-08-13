@@ -103,10 +103,52 @@ export default async function Home() {
 
     const nextEvent = upcomingEvents[0] ?? null;
 
+    const programIds = user.enrollments.map(
+  (enrollment) => enrollment.program.id
+);
+
+const posts = await prisma.post.findMany({
+  where: {
+    published: true,
+    OR: [
+      {
+        programId: null,
+      },
+      {
+        programId: {
+          in: programIds,
+        },
+      },
+    ],
+  },
+  include: {
+    author: true,
+    program: true,
+  },
+  orderBy: {
+    createdAt: "desc",
+  },
+  take: 5,
+});
+
+const memberPosts = posts.map((post) => ({
+  id: post.id,
+  title: post.title,
+  content: post.content,
+  type: post.type,
+  createdAt: post.createdAt.toISOString(),
+  authorName:
+    [post.author.firstName, post.author.lastName]
+      .filter(Boolean)
+      .join(" ") || "ATFT Team",
+  programName: post.program?.name ?? null,
+}));
+
     return (
       <MemberDashboard
         programs={memberPrograms}
         nextEvent={nextEvent}
+        posts={memberPosts}
       />
     );
   }

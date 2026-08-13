@@ -56,14 +56,26 @@ type MemberEvent = {
   programSlug: string;
 };
 
+type MemberPost = {
+  id: string;
+  title: string | null;
+  content: string;
+  type: "ANNOUNCEMENT" | "COMMUNITY";
+  createdAt: string;
+  authorName: string;
+  programName: string | null;
+};
+
 type MemberDashboardProps = {
   programs: MemberProgram[];
   nextEvent: MemberEvent | null;
+  posts: MemberPost[];
 };
 
 export function MemberDashboard({
   programs,
   nextEvent,
+  posts,
 }: MemberDashboardProps) {
   const { user } = useUser();
 
@@ -259,6 +271,94 @@ export function MemberDashboard({
             )}
           </section>
         </div>
+        
+        <section className="panel mt-6 rounded-3xl p-6 sm:p-8">
+  <div className="flex items-end justify-between gap-4">
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
+        Community Activity
+      </p>
+
+      <h2 className="mt-2 text-xl font-semibold text-[var(--text)]">
+        What&apos;s happening at ATFT
+      </h2>
+    </div>
+
+    <Link
+      href="/community"
+      className="hidden items-center gap-2 text-xs font-semibold text-[var(--accent)] sm:inline-flex"
+    >
+      View Community
+      <ArrowRight size={14} />
+    </Link>
+  </div>
+
+  <div className="mt-6 space-y-4">
+    {posts.length > 0 ? (
+      posts.map((post) => (
+        <article
+          key={post.id}
+          className="rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] p-5"
+        >
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-sm font-semibold text-[var(--text)]">
+              {post.authorName}
+            </p>
+
+            {post.programName && (
+              <span className="rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-[10px] font-semibold text-[var(--accent)]">
+                {post.programName}
+              </span>
+            )}
+
+            {post.type === "ANNOUNCEMENT" && (
+              <span className="rounded-full border border-[var(--border)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)]">
+                Announcement
+              </span>
+            )}
+          </div>
+
+          {post.title && (
+            <h3 className="mt-4 text-base font-semibold text-[var(--text)]">
+              {post.title}
+            </h3>
+          )}
+
+          <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+            {post.content}
+          </p>
+
+          <p className="mt-4 text-[11px] text-[var(--text-muted)]">
+            {new Intl.DateTimeFormat("en-US", {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "2-digit",
+            }).format(new Date(post.createdAt))}
+          </p>
+        </article>
+      ))
+    ) : (
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] p-5">
+        <p className="text-sm font-medium text-[var(--text)]">
+          Nothing new yet.
+        </p>
+
+        <p className="mt-2 text-xs leading-5 text-[var(--text-secondary)]">
+          Announcements and community activity will appear here.
+        </p>
+      </div>
+    )}
+  </div>
+
+  <Link
+    href="/community"
+    className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-[var(--accent)] sm:hidden"
+  >
+    View Community
+    <ArrowRight size={14} />
+  </Link>
+</section>
 
         <section className="panel mt-6 rounded-3xl p-6 sm:p-8">
           <div className="flex items-center gap-3">
