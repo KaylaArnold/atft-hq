@@ -6,6 +6,7 @@ import { Send } from "lucide-react";
 import AppShell from "@/components/app-shell";
 import { prisma } from "@/lib/prisma";
 import { ReactionType } from "@/generated/prisma/client";
+import { PostType } from "@/generated/prisma/client";
 
 async function toggleReaction(formData: FormData) {
   "use server";
@@ -173,6 +174,66 @@ async function addComment(formData: FormData) {
   revalidatePath("/community");
 }
 
+async function createPost(formData: FormData) {
+  "use server";
+
+  const { userId } = await auth();
+
+  if (!userId) {
+    redirect("/sign-in");
+  }
+
+  const content = formData.get("content");
+  const programId = formData.get("programId");
+
+  if (typeof content !== "string" || !content.trim()) {
+    return;
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      clerkUserId: userId,
+    },
+    include: {
+      enrollments: {
+        where: {
+          active: true,
+        },
+      },
+    },
+  });
+
+  if (!user) {
+    return;
+  }
+
+  let selectedProgramId: string | null = null;
+
+  if (typeof programId === "string" && programId) {
+    const hasAccess = user.enrollments.some(
+      (enrollment) => enrollment.programId === programId
+    );
+
+    if (!hasAccess) {
+      return;
+    }
+
+    selectedProgramId = programId;
+  }
+
+  await prisma.post.create({
+    data: {
+      content: content.trim(),
+      type: PostType.COMMUNITY,
+      authorId: user.id,
+      programId: selectedProgramId,
+      published: true,
+    },
+  });
+
+  revalidatePath("/community");
+}
+
 export default async function CommunityPage() {
   const { userId } = await auth();
 
@@ -253,6 +314,49 @@ export default async function CommunityPage() {
             community activity.
           </p>
         </section>
+
+        <section className="panel mt-9 rounded-3xl p-6 sm:p-8">
+  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
+    Share with the community
+  </p>
+
+  <form action={createPost} className="mt-4 space-y-4">
+    <textarea
+      name="content"
+      placeholder="What would you like to share?"
+      rows={4}
+      maxLength={3000}
+      required
+      className="w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] px-4 py-3 text-sm text-[var(--text)] outline-none transition placeholder:text-[var(--text-muted)] focus:border-[var(--accent)]"
+    />
+
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <select
+        name="programId"
+        className="rounded-xl border border-[var(--border)] bg-[var(--surface-strong)] px-3 py-2.5 text-sm text-[var(--text)] outline-none"
+        defaultValue=""
+      >
+        <option value="">All Community</option>
+
+        {user.enrollments.map((enrollment) => (
+          <option
+            key={enrollment.program.id}
+            value={enrollment.program.id}
+          >
+            {enrollment.program.name}
+          </option>
+        ))}
+      </select>
+
+      <button
+        type="submit"
+        className="rounded-xl bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
+      >
+        Post
+      </button>
+    </div>
+  </form>
+</section>
 
         <section className="mt-9 space-y-4">
           {posts.length > 0 ? (
