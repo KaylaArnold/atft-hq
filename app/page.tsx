@@ -28,7 +28,20 @@ export default async function Home() {
           active: true,
         },
         include: {
-          program: true,
+          program: {
+            include: {
+              events: {
+                where: {
+                  startsAt: {
+                    gte: new Date(),
+                  },
+                },
+                orderBy: {
+                  startsAt: "asc",
+                },
+              },
+            },
+          },
         },
       },
     },
@@ -70,7 +83,32 @@ export default async function Home() {
       description: enrollment.program.description,
     }));
 
-    return <MemberDashboard programs={memberPrograms} />;
+    const upcomingEvents = user.enrollments
+      .flatMap((enrollment) =>
+        enrollment.program.events.map((event) => ({
+          id: event.id,
+          title: event.title,
+          description: event.description,
+          startsAt: event.startsAt.toISOString(),
+          zoomUrl: event.zoomUrl,
+          programName: enrollment.program.name,
+          programSlug: enrollment.program.slug,
+        }))
+      )
+      .sort(
+        (a, b) =>
+          new Date(a.startsAt).getTime() -
+          new Date(b.startsAt).getTime()
+      );
+
+    const nextEvent = upcomingEvents[0] ?? null;
+
+    return (
+      <MemberDashboard
+        programs={memberPrograms}
+        nextEvent={nextEvent}
+      />
+    );
   }
 
   return (

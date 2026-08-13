@@ -90,6 +90,7 @@ model Program {
   slug        String  @unique
   description String?
 
+  events      Event[]
   enrollments Enrollment[]
 
   createdAt DateTime @default(now())
@@ -109,4 +110,23 @@ model Enrollment {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, programId])
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  startsAt    DateTime
+  endsAt      DateTime?
+
+  zoomUrl String?
+
+  programId String
+  program   Program @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([programId])
+  @@index([startsAt])
 }

@@ -46,12 +46,24 @@ type MemberProgram = {
   description: string | null;
 };
 
+type MemberEvent = {
+  id: string;
+  title: string;
+  description: string | null;
+  startsAt: string;
+  zoomUrl: string | null;
+  programName: string;
+  programSlug: string;
+};
+
 type MemberDashboardProps = {
   programs: MemberProgram[];
+  nextEvent: MemberEvent | null;
 };
 
 export function MemberDashboard({
   programs,
+  nextEvent,
 }: MemberDashboardProps) {
   const { user } = useUser();
 
@@ -184,16 +196,67 @@ export function MemberDashboard({
               Your next event
             </h2>
 
-            <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] p-5">
-              <p className="text-sm font-medium text-[var(--text)]">
-                Upcoming classes and events will appear here.
-              </p>
+            {nextEvent ? (
+              <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] p-5">
+                <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
+                      {nextEvent.programName}
+                    </p>
 
-              <p className="mt-2 text-xs leading-5 text-[var(--text-secondary)]">
-                You&apos;ll be able to access event details and Zoom links
-                directly from the Hub.
-              </p>
-            </div>
+                    <h3 className="mt-2 text-lg font-semibold text-[var(--text)]">
+                      {nextEvent.title}
+                    </h3>
+
+                    {nextEvent.description && (
+                      <p className="mt-2 text-xs leading-5 text-[var(--text-secondary)]">
+                        {nextEvent.description}
+                      </p>
+                    )}
+
+                    <p className="mt-4 text-xs font-medium text-[var(--text-muted)]">
+                      {new Intl.DateTimeFormat("en-US", {
+                        weekday: "long",
+                        month: "long",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                        timeZoneName: "short",
+                      }).format(new Date(nextEvent.startsAt))}
+                    </p>
+                  </div>
+
+                  {nextEvent.zoomUrl && (
+                    <Link
+                      href={nextEvent.zoomUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex h-10 shrink-0 items-center justify-center rounded-xl bg-[var(--accent)] px-4 text-xs font-semibold text-white transition hover:opacity-90"
+                    >
+                      Join Zoom
+                    </Link>
+                  )}
+                </div>
+
+                <Link
+                  href={`/my-programs/${nextEvent.programSlug}/events`}
+                  className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-[var(--accent)]"
+                >
+                  View program events
+                  <ArrowRight size={14} />
+                </Link>
+              </div>
+            ) : (
+              <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] p-5">
+                <p className="text-sm font-medium text-[var(--text)]">
+                  Nothing coming up yet.
+                </p>
+
+                <p className="mt-2 text-xs leading-5 text-[var(--text-secondary)]">
+                  Your next ATFT class or event will appear here when it is scheduled.
+                </p>
+              </div>
+            )}
           </section>
         </div>
 
