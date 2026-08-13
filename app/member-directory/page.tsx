@@ -6,12 +6,24 @@ import { redirect } from "next/navigation";
 import AppShell from "@/components/app-shell";
 import { prisma } from "@/lib/prisma";
 
-export default async function MemberDirectoryPage() {
+type MemberDirectoryPageProps = {
+  searchParams: Promise<{
+    q?: string;
+  }>;
+};
+
+export default async function MemberDirectoryPage({
+    searchParams,
+}: MemberDirectoryPageProps) {
+
   const { userId } = await auth();
 
   if (!userId) {
     redirect("/sign-in");
   }
+
+  const { q } = await searchParams;
+  const search = q?.trim() ?? "";
 
   const currentUser = await prisma.user.findUnique({
     where: {
@@ -46,6 +58,24 @@ export default async function MemberDirectoryPage() {
         },
       },
     },
+    ...(search
+      ? {
+          OR: [
+            {
+              firstName: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+            {
+              lastName: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+          ],
+        }
+      : {}),
   },
   include: {
     enrollments: {
@@ -80,7 +110,7 @@ export default async function MemberDirectoryPage() {
           </h1>
 
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--text-secondary)]">
-            Discover ATFT members who share your active programs.
+            Discover and connect with members across the ATFT community.
           </p>
         </section>
 
@@ -98,24 +128,29 @@ export default async function MemberDirectoryPage() {
                 </p>
 
                 <p className="mt-1 text-xs text-[var(--text-muted)]">
-                  Visible based on shared program access
+                  Active ATFT community members
                 </p>
               </div>
             </div>
 
-            <div className="relative w-full sm:max-w-sm">
-              <Search
-                size={15}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]"
-              />
+            <form
+  action="/member-directory"
+  method="get"
+  className="relative w-full sm:max-w-sm"
+>
+  <Search
+    size={15}
+    className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]"
+  />
 
-              <input
-                type="text"
-                placeholder="Search members..."
-                disabled
-                className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-strong)] py-2.5 pl-9 pr-3 text-sm text-[var(--text)] outline-none placeholder:text-[var(--text-muted)] disabled:cursor-not-allowed"
-              />
-            </div>
+  <input
+    type="search"
+    name="q"
+    defaultValue={search}
+    placeholder="Search members..."
+    className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-strong)] py-2.5 pl-9 pr-3 text-sm text-[var(--text)] outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--accent)]"
+  />
+</form>
           </div>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
