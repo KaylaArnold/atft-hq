@@ -1,127 +1,87 @@
+import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import { LifeBuoy, Mail, ArrowRight } from "lucide-react";
+
 import AppShell from "@/components/app-shell";
-import SupportTicketCard from "@/components/support/ticket-view";
-import PageHeader from "@/components/ui/page-header";
-import { supportTickets } from "@/data/support";
-import {
-  CheckCircle2,
-  Clock3,
-  Mail,
-  Search,
-} from "lucide-react";
+import { prisma } from "@/lib/prisma";
+import { RoleName } from "@/generated/prisma/client";
 
-const filters = [
-  "All",
-  "Needs Reply",
-  "Waiting on Member",
-  "Resolved",
-];
+export default async function SupportPage() {
+  const { userId } = await auth();
 
-export default function SupportPage() {
-  const needsReply = supportTickets.filter(
-    (ticket) => ticket.status === "Needs Reply"
-  ).length;
+  if (!userId) {
+    redirect("/sign-in");
+  }
 
-  const waiting = supportTickets.filter(
-    (ticket) => ticket.status === "Waiting on Member"
-  ).length;
+  const user = await prisma.user.findUnique({
+    where: {
+      clerkUserId: userId,
+    },
+    include: {
+      roles: {
+        include: {
+          role: true,
+        },
+      },
+    },
+  });
 
-  const resolved = supportTickets.filter(
-    (ticket) => ticket.status === "Resolved"
-  ).length;
+  if (!user) {
+    redirect("/");
+  }
+
+  const isMember = user.roles.some(
+    ({ role }) => role.name === RoleName.MEMBER
+  );
+
+  if (!isMember) {
+    redirect("/");
+  }
 
   return (
-    <AppShell>
-      <div className="mx-auto max-w-[1500px] px-4 py-8 sm:px-7 lg:px-9 lg:py-10">
-        <PageHeader
-          eyebrow="Member Care"
-          title="Support"
-          description="Review member issues, open profiles, and respond through the official support inbox."
-        />
+    <AppShell variant="member">
+      <div className="mx-auto max-w-[1000px] px-4 py-8 sm:px-7 lg:px-9 lg:py-10">
+        <section>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
+            Support
+          </p>
 
-        <section className="grid gap-4 md:grid-cols-3">
-          <div className="panel rounded-3xl p-5">
-            <Mail size={18} className="text-amber-300" />
-            <p className="mt-4 text-2xl font-semibold">
-              {needsReply}
-            </p>
-            <p className="mt-1 text-sm font-medium">
-              Needs Reply
-            </p>
-            <p className="mt-2 text-xs text-[#727a74]">
-              Waiting for the ATFT team
-            </p>
-          </div>
+          <h1 className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-[var(--text)] sm:text-[42px]">
+            How can we help?
+          </h1>
 
-          <div className="panel rounded-3xl p-5">
-            <Clock3 size={18} className="text-sky-300" />
-            <p className="mt-4 text-2xl font-semibold">
-              {waiting}
-            </p>
-            <p className="mt-1 text-sm font-medium">
-              Waiting on Member
-            </p>
-            <p className="mt-2 text-xs text-[#727a74]">
-              Follow-up may be required
-            </p>
-          </div>
-
-          <div className="panel rounded-3xl p-5">
-            <CheckCircle2
-              size={18}
-              className="text-emerald-300"
-            />
-            <p className="mt-4 text-2xl font-semibold">
-              {resolved}
-            </p>
-            <p className="mt-1 text-sm font-medium">
-              Resolved
-            </p>
-            <p className="mt-2 text-xs text-[#727a74]">
-              Recently completed issues
-            </p>
-          </div>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--text-secondary)]">
+            Get help with your membership, program access, classes, or technical issues.
+          </p>
         </section>
 
-        <section className="panel mt-6 rounded-3xl p-5 sm:p-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="relative w-full max-w-xl">
-              <Search
-                size={16}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#687069]"
-              />
+        <section className="panel mt-9 rounded-3xl p-6 sm:p-8">
+          <div className="flex items-start gap-4">
+            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent)]">
+              <LifeBuoy size={19} />
+            </span>
 
-              <input
-                type="search"
-                placeholder="Search support..."
-                className="h-12 w-full rounded-2xl border border-white/[0.07] bg-white/[0.025] pl-11 pr-4 text-sm outline-none transition placeholder:text-[#606861] focus:border-emerald-400/25"
-              />
-            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-[var(--text)]">
+                Contact ATFT Support
+              </h2>
 
-            <div className="flex flex-wrap gap-2">
-              {filters.map((filter, index) => (
-                <button
-                  key={filter}
-                  className={
-                    index === 0
-                      ? "rounded-xl bg-emerald-400/12 px-4 py-2.5 text-xs font-medium text-emerald-300"
-                      : "rounded-xl border border-white/[0.06] px-4 py-2.5 text-xs text-[#848c86] transition hover:bg-white/[0.03] hover:text-white"
-                  }
-                >
-                  {filter}
-                </button>
-              ))}
+              <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+                Send your question to the official ATFT Support team.
+              </p>
+
+              <Link
+                href="mailto:support@arlettathefriendlytrader.com"
+                className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--accent)] px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
+              >
+                <Mail size={16} />
+                Email Support
+                <ArrowRight size={14} />
+              </Link>
             </div>
           </div>
         </section>
-
-        <div className="mt-6 space-y-4">
-          {supportTickets.map((ticket) => (
-            <SupportTicketCard
-              key={ticket.id}
-              ticket={ticket}
-            />
-          ))}
-        </div>
       </div>
     </AppShell>
   );

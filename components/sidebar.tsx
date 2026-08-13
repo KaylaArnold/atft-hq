@@ -39,7 +39,7 @@ const memberPrimary = [
   { label: "My Programs", href: "/my-programs", icon: GraduationCap },
   { label: "Events", href: "/events", icon: CalendarDays },
   { label: "Replay Library", href: "/replays", icon: FileStack },
-  { label: "Member Directory", href: "/directory", icon: UsersRound },
+  { label: "Member Directory", href: "/member-directory", icon: UsersRound },
   { label: "Support", href: "/support", icon: LifeBuoy },
 ] as const;
 
@@ -178,11 +178,7 @@ const openTicketCount = tickets.filter(
           </div>
         </div>
 
-        <button
-          type="button"
-          className="mt-3 flex w-full items-center gap-3 rounded-2xl p-2 text-left transition hover:bg-white/[0.055]"
-        >
-          <div className="mt-3 rounded-2xl border border-white/[0.06]">
+        <div className="mt-3 rounded-2xl border border-white/[0.06]">
   <div className="flex w-full items-center gap-3 p-2">
     <div className="grid size-9 place-items-center rounded-full bg-emerald-300/12 text-xs font-bold text-emerald-200">
       {initials}
@@ -199,6 +195,8 @@ const openTicketCount = tickets.filter(
         {variant === "staff" ? "ATFT Staff" : "Member"}
       </p>
     </div>
+
+    <ChevronDown size={14} className="text-[#7f8a82]" />
   </div>
 
   <SignOutButton redirectUrl="/sign-in">
@@ -206,14 +204,11 @@ const openTicketCount = tickets.filter(
       type="button"
       className="flex w-full items-center gap-3 border-t border-white/[0.06] px-3 py-2.5 text-left text-xs text-[#b7c0ba] transition hover:bg-white/[0.055] hover:text-white"
     >
-    <LogOut size={15} />
+      <LogOut size={15} />
       Sign Out
     </button>
   </SignOutButton>
 </div>
-
-          <ChevronDown size={14} className="text-[#7f8a82]" />
-        </button>
       </aside>
     </>
   );
