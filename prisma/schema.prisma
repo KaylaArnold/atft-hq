@@ -19,19 +19,19 @@ enum EntitlementStatus {
 }
 
 model RegistrationEntitlement {
-  id                   String            @id @default(cuid())
-  email                String
-  program              String
-  source               AccessSource
-  status               EntitlementStatus @default(ACTIVE)
+  id      String            @id @default(cuid())
+  email   String
+  program String
+  source  AccessSource
+  status  EntitlementStatus @default(ACTIVE)
 
   stripeCustomerId     String?
   stripePaymentId      String?
   stripeSubscriptionId String?
 
-  registeredAt         DateTime?
-  createdAt            DateTime          @default(now())
-  updatedAt            DateTime          @updatedAt
+  registeredAt DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   @@index([email])
 }
@@ -48,37 +48,65 @@ enum RoleName {
 }
 
 model User {
-  id          String   @id @default(cuid())
-  clerkUserId String   @unique
-  email       String   @unique
+  id          String  @id @default(cuid())
+  clerkUserId String  @unique
+  email       String  @unique
   firstName   String?
   lastName    String?
 
+  enrollments Enrollment[]
   roles       UserRole[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Role {
-  id        String   @id @default(cuid())
-  name      RoleName @unique
+  id   String   @id @default(cuid())
+  name RoleName @unique
 
-  users     UserRole[]
+  users UserRole[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model UserRole {
-  id        String   @id @default(cuid())
-  userId    String
-  roleId    String
+  id     String @id @default(cuid())
+  userId String
+  roleId String
 
-  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role      Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
   @@unique([userId, roleId])
+}
+
+model Program {
+  id          String  @id @default(cuid())
+  name        String
+  slug        String  @unique
+  description String?
+
+  enrollments Enrollment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Enrollment {
+  id        String  @id @default(cuid())
+  userId    String
+  programId String
+  active    Boolean @default(true)
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  program Program @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, programId])
 }

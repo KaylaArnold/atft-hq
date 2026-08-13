@@ -39,7 +39,20 @@ const memberQuickAccess = [
   },
 ];
 
-export function MemberDashboard() {
+type MemberProgram = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+};
+
+type MemberDashboardProps = {
+  programs: MemberProgram[];
+};
+
+export function MemberDashboard({
+  programs,
+}: MemberDashboardProps) {
   const { user } = useUser();
 
   const firstName = user?.firstName || "Dripper";
@@ -122,14 +135,43 @@ export function MemberDashboard() {
               Continue learning
             </h2>
 
-            <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] p-5">
-              <p className="text-sm font-medium text-[var(--text)]">
-                Your enrolled programs will appear here.
-              </p>
+            <div className="mt-6 space-y-3">
+              {programs.length > 0 ? (
+                programs.map((program) => (
+                  <Link
+                    key={program.id}
+                    href={`/my-programs/${program.slug}`}
+                    className="group flex items-center justify-between rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] p-5 transition hover:border-[var(--accent)]/20 hover:bg-white hover:shadow-sm"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-[var(--text)]">
+                        {program.name}
+                      </p>
 
-              <p className="mt-2 text-xs leading-5 text-[var(--text-secondary)]">
-                Program access will be based on your ATFT enrollments.
-              </p>
+                      {program.description && (
+                        <p className="mt-2 text-xs leading-5 text-[var(--text-secondary)]">
+                          {program.description}
+                        </p>
+                      )}
+                    </div>
+
+                    <ArrowRight
+                      size={15}
+                      className="ml-4 shrink-0 text-[var(--text-light)] transition group-hover:translate-x-1 group-hover:text-[var(--accent)]"
+                    />
+                  </Link>
+                ))
+              ) : (
+                <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] p-5">
+                  <p className="text-sm font-medium text-[var(--text)]">
+                    No active programs found.
+                  </p>
+
+                  <p className="mt-2 text-xs leading-5 text-[var(--text-secondary)]">
+                    Contact Support if you believe you should have program access.
+                  </p>
+                </div>
+              )}
             </div>
           </section>
 
@@ -148,8 +190,8 @@ export function MemberDashboard() {
               </p>
 
               <p className="mt-2 text-xs leading-5 text-[var(--text-secondary)]">
-                You'll be able to access event details and Zoom links directly
-                from the Hub.
+                You&apos;ll be able to access event details and Zoom links
+                directly from the Hub.
               </p>
             </div>
           </section>
