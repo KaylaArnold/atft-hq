@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { Dashboard } from "@/components/dashboard";
 import { prisma } from "@/lib/prisma";
 import { RoleName } from "@/generated/prisma/client";
+import { MemberDashboard } from "@/components/member-dashboard";
 
 export default async function Home() {
   const { userId } = await auth();
@@ -49,17 +50,25 @@ export default async function Home() {
 
   // For NOW, this existing dashboard is specifically the executive/COO HQ.
   if (!hasHQAccess) {
-    return (
-      <main className="flex min-h-screen items-center justify-center p-6">
-        <div className="max-w-md text-center">
-          <h1 className="text-2xl font-bold">Dashboard Coming Soon</h1>
-          <p className="mt-3 text-gray-600">
-            Your ATFT Hub dashboard is being configured for your account.
-          </p>
-        </div>
-      </main>
-    );
+  const isMember = user.roles.some(
+    ({ role }) => role.name === RoleName.MEMBER
+  );
+
+  if (isMember) {
+    return <MemberDashboard />;
   }
 
+  return (
+    <main className="flex min-h-screen items-center justify-center p-6">
+      <div className="max-w-md text-center">
+        <h1 className="text-2xl font-bold">Access Not Configured</h1>
+
+        <p className="mt-3 text-gray-600">
+          Your ATFT Hub access has not been configured. Please contact Support.
+        </p>
+      </div>
+    </main>
+  );
+}
   return <Dashboard />;
 }
