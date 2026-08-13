@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { Send } from "lucide-react";
 
+import Link from "next/link";
 import AppShell from "@/components/app-shell";
 import { prisma } from "@/lib/prisma";
 import { ReactionType } from "@/generated/prisma/client";
@@ -261,6 +262,8 @@ export default async function CommunityPage() {
     redirect("/");
   }
 
+  const currentUserId = user.id;
+
   const programIds = user.enrollments.map(
     (enrollment) => enrollment.program.id
   );
@@ -358,7 +361,7 @@ export default async function CommunityPage() {
   </form>
 </section>
 
-        <section className="mt-9 space-y-4">
+        <section className="mt-6 space-y-4">
           {posts.length > 0 ? (
             posts.map((post) => {
               const authorName =
@@ -380,10 +383,27 @@ export default async function CommunityPage() {
                   className="panel rounded-3xl p-6 sm:p-8"
                 >
                   <div className="flex flex-wrap items-center gap-2">
-                    <p className="text-sm font-semibold text-[var(--text)]">
-                      {authorName}
-                    </p>
+    <Link
+      href={`/community/members/${post.author.id}`}
+      className="flex items-center gap-3 rounded-xl transition hover:opacity-75"
+    >
+      {post.author.avatarUrl ? (
+        <img
+          src={post.author.avatarUrl}
+          alt={authorName}
+          className="size-10 rounded-full object-cover"
+        />
+      ) : (
+        <div className="grid size-10 place-items-center rounded-full bg-[var(--accent-soft)] text-sm font-semibold text-[var(--accent)]">
+          {authorName.charAt(0).toUpperCase()}
+        </div>
+      )}
 
+      <p className="text-sm font-semibold text-[var(--text)]">
+        {authorName}
+      </p>
+    </Link>
+  
                     {post.program && (
                       <span className="rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-[10px] font-semibold text-[var(--accent)]">
                         {post.program.name}
@@ -403,73 +423,64 @@ export default async function CommunityPage() {
                     </h2>
                   )}
 
-                  <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-[var(--text-secondary)]">
+                  <><p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-[var(--text-secondary)]">
                     {post.content}
-                  </p>
+                </p><p className="mt-5 text-[11px] text-[var(--text-muted)]">
+                        {createdAt}
+                    </p><div className="mt-5 flex flex-wrap items-center gap-2">
+                        {[
+                            {
+                                type: ReactionType.HEART,
+                                emoji: "❤️",
+                            },
+                            {
+                                type: ReactionType.FIRE,
+                                emoji: "🔥",
+                            },
+                            {
+                                type: ReactionType.PRAISE,
+                                emoji: "🙌",
+                            },
+                        ].map((reaction) => {
+                            const count = post.reactions.filter(
+                                (item) => item.type === reaction.type
+                            ).length;
 
-                  <p className="mt-5 text-[11px] text-[var(--text-muted)]">
-                    {createdAt}
-                  </p>
+                            const reacted = post.reactions.some(
+                                (item) => item.type === reaction.type &&
+                                    item.userId === user.id
+                            );
 
-                  <div className="mt-5 flex flex-wrap items-center gap-2">
-  {[
-    {
-      type: ReactionType.HEART,
-      emoji: "❤️",
-    },
-    {
-      type: ReactionType.FIRE,
-      emoji: "🔥",
-    },
-    {
-      type: ReactionType.PRAISE,
-      emoji: "🙌",
-    },
-  ].map((reaction) => {
-    const count = post.reactions.filter(
-      (item) => item.type === reaction.type
-    ).length;
+                            return (
+                                <form key={reaction.type} action={toggleReaction}>
+                                    <input
+                                        type="hidden"
+                                        name="postId"
+                                        value={post.id} />
 
-    const reacted = post.reactions.some(
-      (item) =>
-        item.type === reaction.type &&
-        item.userId === user.id
-    );
+                                    <input
+                                        type="hidden"
+                                        name="reactionType"
+                                        value={reaction.type} />
 
-    return (
-      <form key={reaction.type} action={toggleReaction}>
-        <input
-          type="hidden"
-          name="postId"
-          value={post.id}
-        />
+                                    <button
+                                        type="submit"
+                                        className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition ${reacted
+                                                ? "border-[var(--accent)] bg-[var(--accent-soft)]"
+                                                : "border-[var(--border)] bg-[var(--surface-strong)] hover:border-[var(--accent)]"}`}
+                                    >
+                                        <span>{reaction.emoji}</span>
 
-        <input
-          type="hidden"
-          name="reactionType"
-          value={reaction.type}
-        />
-
-        <button
-          type="submit"
-          className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition ${
-            reacted
-              ? "border-[var(--accent)] bg-[var(--accent-soft)]"
-              : "border-[var(--border)] bg-[var(--surface-strong)] hover:border-[var(--accent)]"
-          }`}
-        >
-          <span>{reaction.emoji}</span>
-
-          {count > 0 && (
-            <span className="text-xs font-semibold text-[var(--text-secondary)]">
-              {count}
-            </span>
-          )}
-        </button>
-      </form>
-    );
-  })}
-</div>
+                                        {count > 0 && (
+                                            <span className="text-xs font-semibold text-[var(--text-secondary)]">
+                                                {count}
+                                            </span>
+                                        )}
+                                    </button>
+                                </form>
+                            );
+                        })}
+                    </div></>
 
                   {post.comments.length > 0 && (
                     <div className="mt-6 border-t border-[var(--border)] pt-5">
@@ -498,9 +509,27 @@ export default async function CommunityPage() {
                               key={comment.id}
                               className="rounded-2xl bg-[var(--surface-strong)] p-4"
                             >
-                              <p className="text-xs font-semibold text-[var(--text)]">
-                                {commentAuthor}
-                              </p>
+                              
+  <Link
+  href={`/community/members/${comment.author.id}`}
+  className="flex w-fit items-center gap-2.5 rounded-lg transition hover:opacity-75"
+>
+  {comment.author.avatarUrl ? (
+    <img
+      src={comment.author.avatarUrl}
+      alt={commentAuthor}
+      className="size-8 rounded-full object-cover"
+    />
+  ) : (
+    <div className="grid size-8 place-items-center rounded-full bg-[var(--accent-soft)] text-xs font-semibold text-[var(--accent)]">
+      {commentAuthor.charAt(0).toUpperCase()}
+    </div>
+  )}
+
+  <p className="text-xs font-semibold text-[var(--text)]">
+    {commentAuthor}
+  </p>
+</Link>
 
                               <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
                                 {comment.content}

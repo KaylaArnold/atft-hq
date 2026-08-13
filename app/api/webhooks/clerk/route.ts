@@ -119,12 +119,14 @@ export async function POST(req: Request) {
       email,
       firstName: clerkUser.first_name ?? null,
       lastName: clerkUser.last_name ?? null,
+      avatarUrl: clerkUser.image_url ?? null,
     },
     create: {
       clerkUserId: clerkUser.id,
       email,
       firstName: clerkUser.first_name ?? null,
       lastName: clerkUser.last_name ?? null,
+      avatarUrl: clerkUser.image_url ?? null,
     },
   });
 

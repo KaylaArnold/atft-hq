@@ -6,6 +6,8 @@ import AppShell from "@/components/app-shell";
 import { prisma } from "@/lib/prisma";
 import { PostType, RoleName } from "@/generated/prisma/client";
 
+import { DeletePostButton } from "@/components/delete-post-button";
+
 async function createAnnouncement(formData: FormData) {
   "use server";
 
@@ -418,16 +420,10 @@ export default async function ManageCommunityPage() {
               </button>
             </form>
 
-            <form action={deletePost}>
-              <input type="hidden" name="postId" value={post.id} />
-
-              <button
-                type="submit"
-                className="rounded-xl border border-red-200 px-4 py-2 text-xs font-semibold text-red-600"
-              >
-                Delete
-              </button>
-            </form>
+            <DeletePostButton
+                postId={post.id}
+                deleteAction={deletePost}
+            />
           </div>
         </div>
       );

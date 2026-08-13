@@ -53,6 +53,7 @@ model User {
   email       String  @unique
   firstName   String?
   lastName    String?
+  avatarUrl   String?
 
   enrollments Enrollment[]
   roles       UserRole[]
