@@ -161,7 +161,7 @@ export function Dashboard() {
   });
 
   return (
-    <AppShell>
+    <AppShell variant="staff">
       <div className="mx-auto max-w-[1500px] px-4 py-8 sm:px-7 lg:px-9 lg:py-10">
         <section className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>

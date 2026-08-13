@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import {SignOutButton, useUser } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import {
   BarChart3,
@@ -13,6 +14,7 @@ import {
   LifeBuoy,
   Sparkles,
   Ticket,
+  LogOut,
   UsersRound,
   X,
 } from "lucide-react";
@@ -31,18 +33,42 @@ const primary = [
   { label: "Resources", href: "/resources", icon: FileStack },
 ] as const;
 
+const memberPrimary = [
+  { label: "Home", href: "/", icon: Home },
+  { label: "Community", href: "/community", icon: UsersRound },
+  { label: "My Programs", href: "/my-programs", icon: GraduationCap },
+  { label: "Events", href: "/events", icon: CalendarDays },
+  { label: "Replay Library", href: "/replays", icon: FileStack },
+  { label: "Member Directory", href: "/directory", icon: UsersRound },
+  { label: "Support", href: "/support", icon: LifeBuoy },
+] as const;
+
 type SidebarProps = {
   open: boolean;
   onClose: () => void;
+  variant?: "staff" | "member";
 };
 
-export function Sidebar({ open, onClose }: SidebarProps) {
+export function Sidebar({ 
+  open, 
+  onClose,
+  variant = "staff",
+}: SidebarProps) {
   const pathname = usePathname();
   const { tickets } = useHQ();
 
-  const openTicketCount = tickets.filter(
-    (ticket) => ticket.status !== "Resolved"
-  ).length;
+  const { user } = useUser();
+
+const navigation = variant === "member" ? memberPrimary : primary;
+
+const initials =
+  `${user?.firstName?.[0] ?? ""}${user?.lastName?.[0] ?? ""}` ||
+  user?.primaryEmailAddress?.emailAddress?.[0]?.toUpperCase() ||
+  "A";
+
+const openTicketCount = tickets.filter(
+  (ticket) => ticket.status !== "Resolved"
+).length;
 
   return (
     <>
@@ -69,11 +95,11 @@ export function Sidebar({ open, onClose }: SidebarProps) {
 
             <div>
               <p className="m-0 text-[15px] font-semibold tracking-tight text-white">
-                ATFT HQ
+                {variant === "staff" ? "ATFT HQ" : "ATFT Hub"}
               </p>
 
               <p className="m-0 mt-0.5 text-[10px] uppercase tracking-[0.18em] text-[#8e9a91]">
-                Operations
+                {variant === "staff" ? "Operations" : "Member Community"}
               </p>
             </div>
           </div>
@@ -94,7 +120,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           </p>
 
           <div className="space-y-1">
-            {primary.map(({ label, href, icon: Icon }) => {
+            {navigation.map(({ label, href, icon: Icon }) => {
               const isActive =
                 href === "/" ? pathname === "/" : pathname.startsWith(href);
 
@@ -156,19 +182,35 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           type="button"
           className="mt-3 flex w-full items-center gap-3 rounded-2xl p-2 text-left transition hover:bg-white/[0.055]"
         >
-          <div className="grid size-9 place-items-center rounded-full bg-emerald-300/12 text-xs font-bold text-emerald-200">
-            KA
-          </div>
+          <div className="mt-3 rounded-2xl border border-white/[0.06]">
+  <div className="flex w-full items-center gap-3 p-2">
+    <div className="grid size-9 place-items-center rounded-full bg-emerald-300/12 text-xs font-bold text-emerald-200">
+      {initials}
+    </div>
 
-          <div className="min-w-0 flex-1">
-            <p className="m-0 truncate text-xs font-medium text-white">
-              Kayla Arnold
-            </p>
+    <div className="min-w-0 flex-1">
+      <p className="m-0 truncate text-xs font-medium text-white">
+        {user?.fullName ||
+          user?.primaryEmailAddress?.emailAddress ||
+          "ATFT User"}
+      </p>
 
-            <p className="m-0 mt-0.5 truncate text-[11px] text-[#8d9890]">
-              COO · Administrator
-            </p>
-          </div>
+      <p className="m-0 mt-0.5 truncate text-[11px] text-[#8d9890]">
+        {variant === "staff" ? "ATFT Staff" : "Member"}
+      </p>
+    </div>
+  </div>
+
+  <SignOutButton redirectUrl="/sign-in">
+    <button
+      type="button"
+      className="flex w-full items-center gap-3 border-t border-white/[0.06] px-3 py-2.5 text-left text-xs text-[#b7c0ba] transition hover:bg-white/[0.055] hover:text-white"
+    >
+    <LogOut size={15} />
+      Sign Out
+    </button>
+  </SignOutButton>
+</div>
 
           <ChevronDown size={14} className="text-[#7f8a82]" />
         </button>

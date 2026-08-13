@@ -7,15 +7,23 @@ import { CommandPalette } from "./command-palette";
 
 type AppShellProps = {
   children: ReactNode;
+  variant?: "staff" | "member";
 };
 
-export default function AppShell({ children }: AppShellProps) {
+export default function AppShell({ 
+  children,
+  variant = "staff"
+ }: AppShellProps) {
   const [menu, setMenu] = useState(false);
   const [command, setCommand] = useState(false);
 
   return (
     <div className="min-h-screen">
-      <Sidebar open={menu} onClose={() => setMenu(false)} />
+      <Sidebar 
+        open={menu} 
+        onClose={() => setMenu(false)}
+        variant={variant}
+      />
       <CommandPalette open={command} onOpenChange={setCommand} />
 
       <main className="min-h-screen lg:pl-[270px]">
@@ -37,7 +45,7 @@ export default function AppShell({ children }: AppShellProps) {
             <Search size={15} />
 
             <span className="flex-1">
-              Search ATFT HQ...
+              {variant === "staff" ? "Search ATFT HQ..." : "Search ATFT Hub..."}
             </span>
 
             <span className="hidden items-center gap-1 rounded-md border border-black/[0.08] bg-white px-1.5 py-1 text-[10px] text-[#667168] shadow-sm sm:flex">
