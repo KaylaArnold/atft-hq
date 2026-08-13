@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AccessSource {
+  STRIPE
+  MANUAL
+}
+
+enum EntitlementStatus {
+  ACTIVE
+  USED
+  REVOKED
+}
+
+model RegistrationEntitlement {
+  id                   String            @id @default(cuid())
+  email                String
+  program              String
+  source               AccessSource
+  status               EntitlementStatus @default(ACTIVE)
+
+  stripeCustomerId     String?
+  stripePaymentId      String?
+  stripeSubscriptionId String?
+
+  registeredAt         DateTime?
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  @@index([email])
+}

@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { HQProvider } from "@/context/HQContext";
 import "./globals.css";
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <HQProvider>{children}</HQProvider>
+        <ClerkProvider>
+          <HQProvider>{children}</HQProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
