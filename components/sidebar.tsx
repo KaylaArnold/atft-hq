@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {SignOutButton, useUser } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import {
@@ -17,6 +18,7 @@ import {
   LogOut,
   UsersRound,
   X,
+  WalletCards,
 } from "lucide-react";
 import { useHQ } from "@/context/HQContext";
 import { cn } from "@/lib/utils";
@@ -28,6 +30,7 @@ const primary = [
   { label: "Events", href: "/events", icon: Ticket },
   { label: "Member Care", href: "/member-care", icon: LifeBuoy },
   { label: "Operations", href: "/programs/atft-academy/operations", icon: BookOpenCheck },
+  { label: "Monthly Balances", href: "/hq/monthly-balances", icon: BarChart3 },
   { label: "Analytics", href: "/analytics", icon: BarChart3 },
   { label: "Calendar", href: "/calendar", icon: CalendarDays },
   { label: "Resources", href: "/resources", icon: FileStack },
@@ -38,6 +41,7 @@ const memberPrimary = [
   { label: "Community", href: "/community", icon: UsersRound },
   { label: "My Programs", href: "/my-programs", icon: GraduationCap },
   { label: "Events", href: "/events", icon: CalendarDays },
+  { label: "Monthly Balance", href: "/my-programs/mini-drippers/monthly-balance", icon: WalletCards },
   { label: "Replay Library", href: "/replays", icon: FileStack },
   { label: "Member Directory", href: "/member-directory", icon: UsersRound },
   { label: "Support", href: "/support", icon: LifeBuoy },
@@ -59,9 +63,54 @@ export function Sidebar({
 
   const { user } = useUser();
 
-const navigation = variant === "member" ? memberPrimary : primary;
+  const [isPeerCoach, setIsPeerCoach] = useState(false);
 
-const initials =
+  useEffect(() => {
+    if (variant !== "member") {
+      return;
+    }
+
+    async function loadRoles() {
+      try {
+        const response = await fetch("/api/me/roles");
+
+        if (!response.ok) {
+          return;
+        }
+
+        const data = await response.json();
+
+        setIsPeerCoach(data.isPeerCoach === true);
+      } catch {
+        setIsPeerCoach(false);
+      }
+    }
+
+    loadRoles();
+  }, [variant]);
+
+  const navigation =
+  variant === "member"
+    ? [
+        memberPrimary[0], // Home
+        memberPrimary[1], // Community
+        memberPrimary[2], // My Programs
+
+        ...(isPeerCoach
+          ? [
+              {
+                label: "Peer Coaching",
+                href: "/peer-coach",
+                icon: UsersRound,
+              },
+            ]
+          : []),
+
+        ...memberPrimary.slice(3),
+      ]
+    : primary;
+
+  const initials =
   `${user?.firstName?.[0] ?? ""}${user?.lastName?.[0] ?? ""}` ||
   user?.primaryEmailAddress?.emailAddress?.[0]?.toUpperCase() ||
   "A";

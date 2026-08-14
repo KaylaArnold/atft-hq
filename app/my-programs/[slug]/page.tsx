@@ -6,8 +6,10 @@ import {
   BookOpen,
   CalendarDays,
   FileText,
+  NotebookPen,
   PlayCircle,
   UsersRound,
+  WalletCards,
 } from "lucide-react";
 
 import AppShell from "@/components/app-shell";
@@ -79,38 +81,80 @@ export default async function ProgramPage({
 
   const program = enrollment.program;
 
-  const sections = [
-    {
-      title: "Course",
-      description: "Continue your lessons and program material.",
-      icon: BookOpen,
-      href: `/my-programs/${program.slug}/course`,
-    },
-    {
-      title: "Upcoming Events",
-      description: "View upcoming classes and Zoom sessions.",
-      icon: CalendarDays,
-      href: `/my-programs/${program.slug}/events`,
-    },
-    {
-      title: "Replay Library",
-      description: "Watch recordings available for this program.",
-      icon: PlayCircle,
-      href: `/my-programs/${program.slug}/replays`,
-    },
-    {
-      title: "Community",
-      description: "Connect with members in this program.",
-      icon: UsersRound,
-      href: `/my-programs/${program.slug}/community`,
-    },
-    {
-      title: "Resources",
-      description: "Access files, worksheets, and other materials.",
-      icon: FileText,
-      href: `/my-programs/${program.slug}/resources`,
-    },
-  ];
+  const sections =
+  program.slug === "mini-drippers"
+    ? [
+        {
+          title: "Upcoming Events",
+          description: "View upcoming live sessions and Zoom details.",
+          icon: CalendarDays,
+          href: `/my-programs/${program.slug}/events`,
+        },
+        {
+          title: "Accountability",
+          description:
+            "Complete your 30-day assessment and weekly accountability check-ins.",
+          icon: NotebookPen,
+          href: `/my-programs/${program.slug}/accountability`,
+        },
+        {
+          title: "Monthly Balance",
+          description:
+            "Submit and review your monthly beginning and ending balances.",
+          icon: WalletCards,
+          href: `/my-programs/${program.slug}/monthly-balance`,
+        },
+        {
+          title: "Replay Library",
+          description: "Watch recordings available for Mini Drippers.",
+          icon: PlayCircle,
+          href: `/my-programs/${program.slug}/replays`,
+        },
+        {
+          title: "Community",
+          description: "Connect with other Mini Drippers.",
+          icon: UsersRound,
+          href: `/my-programs/${program.slug}/community`,
+        },
+        {
+          title: "Resources",
+          description: "Access program files, worksheets, and resources.",
+          icon: FileText,
+          href: `/my-programs/${program.slug}/resources`,
+        },
+      ]
+    : [
+        {
+          title: "Course",
+          description: "Continue your lessons and program material.",
+          icon: BookOpen,
+          href: `/my-programs/${program.slug}/course`,
+        },
+        {
+          title: "Upcoming Events",
+          description: "View upcoming classes and Zoom sessions.",
+          icon: CalendarDays,
+          href: `/my-programs/${program.slug}/events`,
+        },
+        {
+          title: "Replay Library",
+          description: "Watch recordings available for this program.",
+          icon: PlayCircle,
+          href: `/my-programs/${program.slug}/replays`,
+        },
+        {
+          title: "Community",
+          description: "Connect with members in this program.",
+          icon: UsersRound,
+          href: `/my-programs/${program.slug}/community`,
+        },
+        {
+          title: "Resources",
+          description: "Access files, worksheets, and other materials.",
+          icon: FileText,
+          href: `/my-programs/${program.slug}/resources`,
+        },
+      ];
 
   return (
     <AppShell variant="member">

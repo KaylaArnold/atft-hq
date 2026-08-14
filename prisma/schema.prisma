@@ -18,6 +18,30 @@ enum EntitlementStatus {
   REVOKED
 }
 
+enum AccountabilityCycleStatus {
+  ACTIVE
+  COMPLETED
+  EXTENDED
+  CANCELLED
+}
+
+enum AccountabilityOutcome {
+  GRADUATE
+  CONTINUE_30_DAYS
+  COACH_ARLETTA
+  ACCOUNTABILITY_PARTNER
+}
+
+enum CoachingDocumentType {
+  INITIAL_ASSESSMENT
+  WEEKLY_CHECK_IN
+  PEER_COACH_CHECK_IN
+  WEEKLY_SCORECARD
+  DAILY_TRADING_JOURNAL
+  FINAL_REPORT_CARD
+  OTHER
+}
+
 model RegistrationEntitlement {
   id      String            @id @default(cuid())
   email   String
@@ -61,6 +85,12 @@ model User {
   reactions       Reaction[]
   monthlyBalances MonthlyBalance[]
 
+  accountabilityCyclesAsMember    AccountabilityCycle[] @relation("AccountabilityMember")
+  accountabilityCyclesAsPeerCoach AccountabilityCycle[] @relation("AccountabilityPeerCoach")
+  uploadedCoachingDocuments       CoachingDocument[]    @relation("CoachingDocumentUploader")
+  peerCoachAssignments            PeerCoachAssignment[] @relation("PeerCoach")
+  peerCoachAssignmentsAsMember    PeerCoachAssignment[] @relation("AssignedMember")
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   comments  Comment[]
@@ -95,10 +125,12 @@ model Program {
   slug        String  @unique
   description String?
 
-  events          Event[]
-  enrollments     Enrollment[]
-  posts           Post[]
-  monthlyBalances MonthlyBalance[]
+  events               Event[]
+  enrollments          Enrollment[]
+  posts                Post[]
+  monthlyBalances      MonthlyBalance[]
+  peerCoachAssignments PeerCoachAssignment[]
+  accountabilityCycles AccountabilityCycle[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -242,4 +274,178 @@ enum BalanceMarker {
   GREEN
   YELLOW
   RED
+}
+
+model PeerCoachAssignment {
+  id String @id @default(cuid())
+
+  peerCoachId String
+  peerCoach   User   @relation("PeerCoach", fields: [peerCoachId], references: [id], onDelete: Cascade)
+
+  memberId String
+  member   User   @relation("AssignedMember", fields: [memberId], references: [id], onDelete: Cascade)
+
+  programId String
+  program   Program @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  accountabilityCycles AccountabilityCycle[]
+
+  active Boolean @default(true)
+
+  assignedAt DateTime  @default(now())
+  endedAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([memberId, programId])
+  @@index([peerCoachId])
+  @@index([memberId])
+  @@index([programId])
+}
+
+model AccountabilityCycle {
+  id String @id @default(cuid())
+
+  assignmentId String
+  assignment   PeerCoachAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  memberId String
+  member   User   @relation("AccountabilityMember", fields: [memberId], references: [id], onDelete: Cascade)
+
+  peerCoachId String
+  peerCoach   User   @relation("AccountabilityPeerCoach", fields: [peerCoachId], references: [id], onDelete: Cascade)
+
+  programId String
+  program   Program @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  startDate DateTime
+  endDate   DateTime
+
+  status  AccountabilityCycleStatus @default(ACTIVE)
+  outcome AccountabilityOutcome?
+
+  initialAssessment InitialAccountabilityAssessment?
+
+  completedAt DateTime?
+
+  checkIns  CoachingCheckIn[]
+  documents CoachingDocument[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([assignmentId])
+  @@index([memberId])
+  @@index([peerCoachId])
+  @@index([programId])
+  @@index([status])
+}
+
+model CoachingDocument {
+  id String @id @default(cuid())
+
+  cycleId String
+  cycle   AccountabilityCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+
+  type  CoachingDocumentType
+  title String
+
+  fileUrl  String?
+  fileName String?
+
+  weekNumber Int?
+
+  uploadedByUserId String?
+  uploadedByUser   User?   @relation("CoachingDocumentUploader", fields: [uploadedByUserId], references: [id], onDelete: SetNull)
+
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([cycleId])
+  @@index([type])
+}
+
+model CoachingCheckIn {
+  id String @id @default(cuid())
+
+  cycleId String
+  cycle   AccountabilityCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+
+  weekNumber        Int?
+  checkInDate       DateTime  @default(now())
+  nextCheckInDate   DateTime?
+  memberCompletedAt DateTime?
+  coachReviewedAt   DateTime?
+
+  progressStatus String?
+
+  strengths               String?
+  challenges              String?
+  actionItems             String?
+  coachNotes              String?
+  traderQuestions         String?
+  supportNeeded           String?
+  journalConsistency      String?
+  attendanceStatus        String?
+  tradingPlanStatus       String?
+  outsideSetupTrades      String?
+  biggestWin              String?
+  primaryEmotion          String?
+  riskDiscipline          String?
+  marketLesson            String?
+  weeklyGoal              String?
+  areasToCelebrate        String?
+  areasNeedingAttention   String?
+  coachEncouragement      String?
+  traderSignature         String?
+  coachSignature          String?
+  attendanceReason        String?
+  tradingPlanExplanation  String?
+  outsideSetupExplanation String?
+  riskComments            String?
+
+  completed Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([cycleId])
+  @@index([checkInDate])
+}
+
+model InitialAccountabilityAssessment {
+  id String @id @default(cuid())
+
+  cycleId String              @unique
+  cycle   AccountabilityCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+
+  strengths       String
+  weaknesses      String
+  stepsTaken      String
+  biggestObstacle String
+
+  commitmentScore  Int
+  commitmentReason String?
+
+  brokenTradingRule     String
+  attendanceConsistency String
+  journalingConsistency String
+  primaryEmotion        String
+
+  oneAreaToImprove   String
+  successDefinition  String
+  coachSupportNeeded String
+
+  willingToBeAccountable    Boolean
+  accountabilityExplanation String?
+
+  personalCommitment String
+
+  completedAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
