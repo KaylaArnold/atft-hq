@@ -347,7 +347,11 @@ export default async function PeerCoachMemberPage({
           <SummaryCard
             icon={ClipboardCheck}
             label="Check-Ins"
-            value={String(completedCheckIns.length)}
+            value={`${
+              currentCycle?.checkIns.filter(
+                (checkIn) => checkIn.memberCompletedAt
+              ).length ?? 0
+            } of 4 submitted`}
           />
 
           <SummaryCard
@@ -403,18 +407,21 @@ export default async function PeerCoachMemberPage({
                 </span>
               </div>
 
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] p-5">
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">
                     Weekly Check-Ins
                   </p>
 
                   <p className="mt-3 text-2xl font-semibold text-[var(--text)]">
-                    {completedCheckIns.length}
+                    {currentCycle?.checkIns.filter(
+                      (checkIn) => checkIn.memberCompletedAt
+                    ).length ?? 0}{" "}
+                    of 4
                   </p>
 
                   <p className="mt-1 text-xs text-[var(--text-secondary)]">
-                    Completed during this cycle
+                    Submitted during this cycle
                   </p>
                 </div>
 
@@ -434,33 +441,29 @@ export default async function PeerCoachMemberPage({
               </div>
             </>
           ) : (
-  <div className="mt-5 rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface-strong)] p-6">
-    <p className="text-sm font-semibold text-[var(--text)]">
-      No accountability cycle started yet.
-    </p>
+            <div className="mt-5 rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface-strong)] p-6">
+              <p className="text-sm font-semibold text-[var(--text)]">
+                No accountability cycle started yet.
+              </p>
 
-    <p className="mt-2 max-w-xl text-xs leading-5 text-[var(--text-secondary)]">
-      Start a 30-day accountability cycle when this Dripper begins
-      structured coaching support.
-    </p>
+              <p className="mt-2 max-w-xl text-xs leading-5 text-[var(--text-secondary)]">
+                Start a 30-day accountability cycle when this Dripper begins
+                structured coaching support.
+              </p>
 
-    <form action={startAccountabilityCycle} className="mt-5">
-      <input
-        type="hidden"
-        name="memberId"
-        value={member.id}
-      />
+              <form action={startAccountabilityCycle} className="mt-5">
+                <input type="hidden" name="memberId" value={member.id} />
 
-      <button
-        type="submit"
-        className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent)] px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
-      >
-        <CalendarDays size={16} />
-        Start 30-Day Cycle
-      </button>
-    </form>
-  </div>
-)}
+                <button
+                  type="submit"
+                  className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent)] px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
+                >
+                  <CalendarDays size={16} />
+                  Start 30-Day Cycle
+                </button>
+              </form>
+            </div>
+          )}
         </section>
 
         <section className="panel mt-6 rounded-3xl p-6 sm:p-8">
@@ -483,9 +486,10 @@ export default async function PeerCoachMemberPage({
           <div className="mt-6 space-y-3">
             {currentCycle && currentCycle.checkIns.length > 0 ? (
               currentCycle.checkIns.map((checkIn) => (
-                <article
+                <Link
                   key={checkIn.id}
-                  className="rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] p-5"
+                  href={`/peer-coach/members/${member.id}/weekly-check-in?week=${checkIn.weekNumber ?? 1}`}
+                  className="block rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] p-5 transition hover:-translate-y-0.5 hover:border-[var(--accent)]/20 hover:bg-white hover:shadow-sm"
                 >
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div>
@@ -534,7 +538,7 @@ export default async function PeerCoachMemberPage({
                       </p>
                     </div>
                   )}
-                </article>
+                </Link>
               ))
             ) : (
               <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface-strong)] p-6 text-center">
@@ -572,34 +576,42 @@ export default async function PeerCoachMemberPage({
                 <DocumentCard
                     title="Initial Assessment"
                     detail="ATFT-001 · 30-Day Accountability Assessment"
-                    completed={Boolean(initialAssessment)}
+                    status={initialAssessment ? "complete" : "not-started"}
                 />
             </Link>
 
             <Link href={`/peer-coach/members/${member.id}/weekly-check-in`}>
-  <DocumentCard
-    title="Weekly Check-In"
-    detail="ATFT-002 · Weeks 1–4"
-    completed={completedCheckIns.length >= 4}
-  />
-</Link>
+              <DocumentCard
+                title="Weekly Check-In"
+                detail="ATFT-002 · Weeks 1–4"
+                status={
+                  currentCycle?.checkIns.length
+                    ? currentCycle.checkIns.length >= 4
+                      ? "complete"
+                      : "in-progress"
+                    : "not-started"
+                }
+              />
+            </Link>
 
             <DocumentCard
               title="Peer Coach Check-In"
               detail="Mini Dripper Weekly Peer Coach Check-In"
-              completed={
+              status={
                 currentCycle?.documents.some(
                   (document) =>
                     document.type ===
                     CoachingDocumentType.PEER_COACH_CHECK_IN
-                ) ?? false
+                )
+                  ? "complete"
+                  : "not-started"
               }
             />
 
             <DocumentCard
               title="Final Report Card"
               detail="ATFT-005 · End-of-cycle evaluation"
-              completed={Boolean(finalReport)}
+              status={finalReport ? "complete" : "not-started"}
             />
           </div>
         </section>
@@ -619,7 +631,9 @@ function SummaryCard({
 }) {
   return (
     <div className="panel rounded-2xl p-5">
-      <Icon size={17} className="text-[var(--accent)]" />
+      <div className="text-[var(--accent)]">
+        <Icon size={17} />
+      </div>
 
       <p className="mt-4 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">
         {label}
@@ -635,12 +649,32 @@ function SummaryCard({
 function DocumentCard({
   title,
   detail,
-  completed,
+  status,
 }: {
   title: string;
   detail: string;
-  completed: boolean;
+  status: "not-started" | "in-progress" | "complete";
 }) {
+  const statusConfig = {
+    "not-started": {
+      label: "Not Started",
+      className:
+        "border-[var(--border)] bg-white text-[var(--text-muted)]",
+    },
+    "in-progress": {
+      label: "In Progress",
+      className:
+        "border-amber-200 bg-amber-50 text-amber-700",
+    },
+    complete: {
+      label: "Complete",
+      className: 
+        "border-emerald-200 bg-emerald-50 text-emerald-700",
+    },
+  };
+
+  const config = statusConfig[status];
+
   return (
     <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] p-5">
       <div className="flex items-start justify-between gap-4">
@@ -654,15 +688,11 @@ function DocumentCard({
           </p>
         </div>
 
-        {completed ? (
-          <span className="shrink-0 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-700">
-            Complete
-          </span>
-        ) : (
-          <span className="shrink-0 rounded-full border border-[var(--border)] bg-white px-2.5 py-1 text-[10px] font-semibold text-[var(--text-muted)]">
-            Not Started
-          </span>
-        )}
+        <span
+          className={`shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-semibold ${config.className}`}
+        >
+          {config.label}
+        </span>
       </div>
     </div>
   );

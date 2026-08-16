@@ -9,7 +9,6 @@ import {
   WalletCards,
 } from "lucide-react";
 import type { SupportTicket } from "@/data/support";
-import { members } from "@/data/members";
 
 type MemberSnapshotProps = {
   ticket: SupportTicket;
@@ -18,9 +17,15 @@ type MemberSnapshotProps = {
 export default function MemberSnapshot({
   ticket,
 }: MemberSnapshotProps) {
-  const member = members.find(
-    (item) => item.id === ticket.memberId
-  );
+  const member = undefined as
+    | {
+        community?: boolean;
+        payments?: string;
+        support?: string;
+        email?: string;
+        phone?: string;
+      }
+    | undefined;
 
   const initials = ticket.memberName
     .split(" ")

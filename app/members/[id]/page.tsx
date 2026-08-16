@@ -114,14 +114,14 @@ export default function MemberProfilePage() {
 
   const health = getMemberHealth({
     paymentsCurrent: member.payments === "Current",
-    communityActive: member.community,
+    communityActive: !!member.community,
     needsReplyCount: needsReplyTickets.length,
   });
 
   const activityItems = buildMemberActivity({
     memberName: member.name,
     program: member.program,
-    community: member.community,
+    community: !!member.community,
     payments: member.payments,
     tickets: memberTickets,
   });
@@ -893,7 +893,7 @@ function getMemberHealth({
   paymentsCurrent,
   communityActive,
   needsReplyCount,
-}: HealthArgs) {
+}: HealthArgs): { label: string; color: string; background: string; } {
   const score =
     Number(paymentsCurrent) +
     Number(communityActive) +

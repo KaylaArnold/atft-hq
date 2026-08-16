@@ -85,11 +85,13 @@ model User {
   reactions       Reaction[]
   monthlyBalances MonthlyBalance[]
 
-  accountabilityCyclesAsMember    AccountabilityCycle[] @relation("AccountabilityMember")
-  accountabilityCyclesAsPeerCoach AccountabilityCycle[] @relation("AccountabilityPeerCoach")
-  uploadedCoachingDocuments       CoachingDocument[]    @relation("CoachingDocumentUploader")
-  peerCoachAssignments            PeerCoachAssignment[] @relation("PeerCoach")
-  peerCoachAssignmentsAsMember    PeerCoachAssignment[] @relation("AssignedMember")
+  accountabilityCyclesAsMember    AccountabilityCycle[]           @relation("AccountabilityMember")
+  accountabilityCyclesAsPeerCoach AccountabilityCycle[]           @relation("AccountabilityPeerCoach")
+  uploadedCoachingDocuments       CoachingDocument[]              @relation("CoachingDocumentUploader")
+  peerCoachAssignments            PeerCoachAssignment[]           @relation("PeerCoach")
+  peerCoachAssignmentsAsMember    PeerCoachAssignment[]           @relation("AssignedMember")
+  accountabilityCoachAssignments  AccountabilityCoachAssignment[] @relation("AccountabilityCoachAssignments")
+  accountabilityMemberAssignments AccountabilityCoachAssignment[] @relation("AccountabilityMemberAssignments")
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -125,12 +127,13 @@ model Program {
   slug        String  @unique
   description String?
 
-  events               Event[]
-  enrollments          Enrollment[]
-  posts                Post[]
-  monthlyBalances      MonthlyBalance[]
-  peerCoachAssignments PeerCoachAssignment[]
-  accountabilityCycles AccountabilityCycle[]
+  events                         Event[]
+  enrollments                    Enrollment[]
+  posts                          Post[]
+  monthlyBalances                MonthlyBalance[]
+  peerCoachAssignments           PeerCoachAssignment[]
+  accountabilityCycles           AccountabilityCycle[]
+  accountabilityCoachAssignments AccountabilityCoachAssignment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -332,8 +335,10 @@ model AccountabilityCycle {
   checkIns  CoachingCheckIn[]
   documents CoachingDocument[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt                       DateTime                       @default(now())
+  updatedAt                       DateTime                       @updatedAt
+  accountabilityCoachAssignment   AccountabilityCoachAssignment? @relation(fields: [accountabilityCoachAssignmentId], references: [id])
+  accountabilityCoachAssignmentId String?
 
   @@index([assignmentId])
   @@index([memberId])
@@ -345,14 +350,16 @@ model AccountabilityCycle {
 model CoachingDocument {
   id String @id @default(cuid())
 
-  cycleId String
-  cycle   AccountabilityCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  cycleId                  String
+  cycle                    AccountabilityCycle            @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  accountabilityAssignment AccountabilityCoachAssignment? @relation(fields: [accountabilityAssignmentId], references: [id], onDelete: Cascade)
 
   type  CoachingDocumentType
   title String
 
-  fileUrl  String?
-  fileName String?
+  fileUrl                    String?
+  fileName                   String?
+  accountabilityAssignmentId String?
 
   weekNumber Int?
 
@@ -448,4 +455,32 @@ model InitialAccountabilityAssessment {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model AccountabilityCoachAssignment {
+  id String @id @default(cuid())
+
+  accountabilityCoachId String
+  accountabilityCoach   User   @relation("AccountabilityCoachAssignments", fields: [accountabilityCoachId], references: [id], onDelete: Cascade)
+
+  memberId String
+  member   User   @relation("AccountabilityMemberAssignments", fields: [memberId], references: [id], onDelete: Cascade)
+
+  programId String
+  program   Program @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  cycles AccountabilityCycle[]
+
+  active Boolean @default(true)
+
+  assignedAt DateTime  @default(now())
+  endedAt    DateTime?
+
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  coachingDocuments CoachingDocument[]
+
+  @@index([accountabilityCoachId])
+  @@index([memberId])
+  @@index([programId])
 }

@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   ArrowLeft,
   CalendarDays,
+  CheckCircle2,
   ClipboardCheck,
 } from "lucide-react";
 
@@ -600,14 +601,37 @@ export default async function WeeklyCheckInPage({
                   </div>
                 </div>
 
-                <button
-                  type="submit"
-                  className="rounded-xl bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
-                >
-                  {checkIn.coachReviewedAt
-                    ? `Save Week ${selectedWeek} Coach Review`
-                    : `Complete Week ${selectedWeek} Coach Review`}
-                </button>
+                <div className="space-y-4">
+  <button
+    type="submit"
+    className="rounded-xl bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+  >
+    {checkIn.coachReviewedAt
+      ? `Save Week ${selectedWeek} Coach Review`
+      : `Complete Week ${selectedWeek} Coach Review`}
+  </button>
+
+  {checkIn.coachReviewedAt && (
+    <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+      <div className="flex items-start gap-3">
+        <CheckCircle2
+          size={18}
+          className="mt-0.5 shrink-0 text-emerald-600"
+        />
+
+        <div>
+          <p className="text-sm font-semibold text-emerald-700">
+            Week {selectedWeek} Coach Review Saved
+          </p>
+
+          <p className="mt-1 text-xs leading-5 text-emerald-700/80">
+            Your review has been saved and is now available to the member.
+          </p>
+        </div>
+      </div>
+    </div>
+  )}
+</div>
               </form>
             </section>
           </>

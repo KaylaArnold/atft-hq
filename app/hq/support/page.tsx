@@ -160,6 +160,7 @@ export default async function SupportPage() {
             <SupportTicketCard
               key={ticket.id}
               ticket={ticket}
+              onStatusChange={() => {}}
             />
           ))}
         </div>

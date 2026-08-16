@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   ArrowLeft,
   CalendarDays,
+  CheckCircle2,
   ClipboardCheck,
 } from "lucide-react";
 
@@ -220,19 +221,31 @@ async function saveMemberCheckIn(formData: FormData) {
   }
 
   revalidatePath(
-    "/my-programs/mini-drippers/accountability/weekly-check-in"
-  );
+  "/my-programs/mini-drippers/accountability"
+);
 
-  revalidatePath("/peer-coach");
+revalidatePath(
+  "/my-programs/mini-drippers/accountability/weekly-check-in"
+);
 
-  redirect(
-    `/my-programs/mini-drippers/accountability/weekly-check-in?week=${parsedWeekNumber}`
-  );
+revalidatePath("/peer-coach");
+
+revalidatePath(
+  `/peer-coach/members/${user.id}`
+);
+
+revalidatePath(
+  `/peer-coach/members/${user.id}/weekly-check-in`
+);
+
+redirect(
+  `/my-programs/mini-drippers/accountability/weekly-check-in?week=${parsedWeekNumber}`
+);
 }
 
 export default async function MemberWeeklyCheckInPage({
   searchParams,
-}: WeeklyCheckInPageProps) {
+}: WeeklyCheckInPageProps): Promise<import("react").JSX.Element> {
   const query = await searchParams;
 
   const { userId } = await auth();
@@ -454,19 +467,6 @@ export default async function MemberWeeklyCheckInPage({
               </p>
             </div>
           </div>
-
-          {checkIn?.memberCompletedAt && (
-            <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
-              <p className="text-sm font-semibold text-emerald-700">
-                Week {selectedWeek} Submitted
-              </p>
-
-              <p className="mt-1 text-xs text-emerald-700/80">
-                You can update your responses below
-                if needed.
-              </p>
-            </div>
-          )}
 
           {checkIn?.coachReviewedAt && (
             <div className="mt-4 rounded-2xl border border-blue-200 bg-blue-50 p-4">
@@ -715,14 +715,38 @@ export default async function MemberWeeklyCheckInPage({
               />
             </FormSection>
 
-            <button
-              type="submit"
-              className="rounded-xl bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
-            >
-              {checkIn?.memberCompletedAt
-                ? `Save Week ${selectedWeek} Changes`
-                : `Submit Week ${selectedWeek} Check-In`}
-            </button>
+            <div className="space-y-4">
+  <button
+    type="submit"
+    className="rounded-xl bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+  >
+    {checkIn?.memberCompletedAt
+      ? `Save Week ${selectedWeek} Changes`
+      : `Submit Week ${selectedWeek} Check-In`}
+  </button>
+
+  {checkIn?.memberCompletedAt && (
+    <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+      <div className="flex items-start gap-3">
+        <CheckCircle2
+          size={18}
+          className="mt-0.5 shrink-0 text-emerald-600"
+        />
+
+        <div>
+          <p className="text-sm font-semibold text-emerald-700">
+            Week {selectedWeek} Submitted Successfully
+          </p>
+
+          <p className="mt-1 text-xs leading-5 text-emerald-700/80">
+            Your responses have been saved and are ready for your Peer
+            Coach to review.
+          </p>
+        </div>
+      </div>
+    </div>
+  )}
+</div>
           </form>
         </section>
 
