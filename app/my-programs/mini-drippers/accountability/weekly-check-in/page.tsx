@@ -264,30 +264,32 @@ export default async function MemberWeeklyCheckInPage({
     redirect("/");
   }
 
-  const cycle =
-    await prisma.accountabilityCycle.findFirst({
-      where: {
-        memberId: user.id,
-        status:
-          AccountabilityCycleStatus.ACTIVE,
-        program: {
-          slug: "mini-drippers",
+  const cycle = await prisma.accountabilityCycle.findFirst({
+    where: {
+      memberId: user.id,
+      status: AccountabilityCycleStatus.ACTIVE,
+      program: {
+        slug: "mini-drippers",
+      },
+    },
+
+    include: {
+      checkIns: {
+        orderBy: {
+          weekNumber: "asc",
         },
       },
-
-      include: {
-        checkIns: {
-          orderBy: {
-            weekNumber: "asc",
-          },
+      accountabilityCoachAssignment: {
+        include: {
+          accountabilityCoach: true,
         },
-        peerCoach: true,
       },
+    },
 
-      orderBy: {
-        startDate: "desc",
-      },
-    });
+    orderBy: {
+      startDate: "desc",
+    },
+  });
 
   if (!cycle) {
     return (
@@ -359,15 +361,19 @@ export default async function MemberWeeklyCheckInPage({
     user.email ||
     "ATFT Member";
 
-  const coachName =
-    [
-      cycle.peerCoach.firstName,
-      cycle.peerCoach.lastName,
-    ]
-      .filter(Boolean)
-      .join(" ") ||
-    cycle.peerCoach.email ||
-    "Peer Coach";
+  const accountabilityPartner = 
+    cycle.accountabilityCoachAssignment?.accountabilityCoach;
+
+  const coachName = accountabilityPartner
+    ? [
+        accountabilityPartner.firstName,
+        accountabilityPartner.lastName,
+      ]
+        .filter(Boolean)
+        .join(" ") ||
+      accountabilityPartner.email ||
+      "Accountability Partner"
+    : "Not Assigned";
 
   return (
     <AppShell variant="member">
@@ -391,12 +397,12 @@ export default async function MemberWeeklyCheckInPage({
 
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--text-secondary)]">
             Complete your weekly accountability
-            check-in. Your Peer Coach can review
+            check-in. Your Accountability Partner can review
             your responses but cannot change them.
           </p>
 
           <p className="mt-2 text-xs text-[var(--text-muted)]">
-            Peer Coach: {coachName}
+            Accountability Partner: {coachName}
           </p>
         </section>
 
@@ -471,7 +477,7 @@ export default async function MemberWeeklyCheckInPage({
           {checkIn?.coachReviewedAt && (
             <div className="mt-4 rounded-2xl border border-blue-200 bg-blue-50 p-4">
               <p className="text-sm font-semibold text-blue-700">
-                Peer Coach Review Complete
+                Accountability Partner Review Complete
               </p>
 
               <p className="mt-1 text-xs text-blue-700/80">
@@ -753,7 +759,7 @@ export default async function MemberWeeklyCheckInPage({
         {checkIn?.coachReviewedAt && (
           <section className="panel mt-6 rounded-3xl p-6 sm:p-8">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
-              Peer Coach Review
+              Accountability Partner Review
             </p>
 
             <h2 className="mt-2 text-xl font-semibold text-[var(--text)]">

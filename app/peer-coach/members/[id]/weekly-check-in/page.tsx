@@ -11,10 +11,7 @@ import {
 
 import AppShell from "@/components/app-shell";
 import { prisma } from "@/lib/prisma";
-import {
-  AccountabilityCycleStatus,
-  RoleName,
-} from "@/generated/prisma/client";
+import { AccountabilityCycleStatus } from "@/generated/prisma/client";
 
 type WeeklyCheckInPageProps = {
   params: Promise<{
@@ -63,30 +60,38 @@ async function saveCoachReview(formData: FormData) {
     return;
   }
 
-  const coach = await prisma.user.findUnique({
+  const accountabilityPartner = await prisma.user.findUnique({
     where: {
       clerkUserId: userId,
     },
-    include: {
-      roles: {
-        include: {
-          role: true,
-        },
+  });
+
+  if (!accountabilityPartner) {
+    redirect("/");
+  }
+
+  /*
+  * No special role is required.
+  * 
+  * Access is determined by whether this user is actually
+  * assigned as the member's active Accountability Partner.
+  */
+const accountabilityAssignment = 
+  await prisma.accountabilityCoachAssignment.findFirst({
+    where: {
+      accountabilityCoachId: accountabilityPartner.id,
+      memberId,
+      active: true,
+      program: {
+        slug: "mini-drippers",
       },
     },
   });
 
-  if (!coach) {
-    redirect("/");
-  }
+if (!accountabilityAssignment) {
+  redirect("/my-programs");
+}
 
-  const isPeerCoach = coach.roles.some(
-    ({ role }) => role.name === RoleName.PEER_COACH
-  );
-
-  if (!isPeerCoach) {
-    redirect("/");
-  }
 
   /*
    * Make sure this check-in belongs to a member
@@ -96,16 +101,12 @@ async function saveCoachReview(formData: FormData) {
     where: {
       id: checkInId,
       cycle: {
-        peerCoachId: coach.id,
         memberId,
         status: AccountabilityCycleStatus.ACTIVE,
-        assignment: {
-          active: true,
-          peerCoachId: coach.id,
-          memberId,
+        accountabilityCoachAssignmentId:
+          accountabilityAssignment.id,
         },
       },
-    },
   });
 
   if (!checkIn) {
@@ -181,49 +182,45 @@ export default async function WeeklyCheckInPage({
     redirect("/");
   }
 
-  const isPeerCoach = coach.roles.some(
-    ({ role }) => role.name === RoleName.PEER_COACH
-  );
-
-  if (!isPeerCoach) {
-    redirect("/");
-  }
-
-  const assignment = await prisma.peerCoachAssignment.findFirst({
-    where: {
-      peerCoachId: coach.id,
-      memberId: id,
-      active: true,
-    },
-    include: {
-      member: true,
-      accountabilityCycles: {
-        where: {
-          status: AccountabilityCycleStatus.ACTIVE,
+  const accountabilityAssignment = 
+    await prisma.accountabilityCoachAssignment.findFirst({
+      where: {
+        accountabilityCoachId: coach.id,
+        memberId: id,
+        active: true,
+        program: {
+          slug: "mini-drippers",
         },
-        include: {
-          checkIns: {
-            orderBy: {
-              weekNumber: "asc",
+      },
+      include: {
+        member: true,
+        cycles: {
+          where: {
+            status: AccountabilityCycleStatus.ACTIVE,
+          },
+          include: {
+            checkIns: {
+              orderBy: {
+                weekNumber: "asc",
+              },
             },
           },
+          orderBy: {
+            startDate: "desc",
+          },
+          take: 1,
         },
-        orderBy: {
-          startDate: "desc",
-        },
-        take: 1,
       },
-    },
-  });
-
-  if (!assignment) {
-    redirect("/peer-coach");
+    });
+  
+  if (!accountabilityAssignment) {
+    redirect("/my=programs");
   }
 
-  const cycle = assignment.accountabilityCycles[0];
+  const cycle = accountabilityAssignment.cycles[0];
 
   if (!cycle) {
-    redirect(`/peer-coach/members/${id}`);
+    redirect("/my-programs");
   }
 
   const requestedWeek = Number(query.week);
@@ -242,12 +239,12 @@ export default async function WeeklyCheckInPage({
 
   const memberName =
     [
-      assignment.member.firstName,
-      assignment.member.lastName,
+      accountabilityAssignment.member.firstName,
+      accountabilityAssignment.member.lastName,
     ]
       .filter(Boolean)
       .join(" ") ||
-    assignment.member.email ||
+    accountabilityAssignment.member.email ||
     "ATFT Member";
 
   const coachName =

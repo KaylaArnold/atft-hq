@@ -40,13 +40,20 @@ export default async function AccountabilityPage() {
     },
     include: {
       initialAssessment: true,
-      peerCoach: true,
+      
+      accountabilityCoachAssignment: {
+        include: {
+          accountabilityCoach: true,
+        },
+      },
+
       checkIns: {
         orderBy: {
           weekNumber: "asc",
         },
       },
     },
+
     orderBy: {
       startDate: "desc",
     },
@@ -83,12 +90,17 @@ export default async function AccountabilityPage() {
     );
   }
 
-  const coachName =
-    [cycle.peerCoach.firstName, cycle.peerCoach.lastName]
+  const accountabilityCoach = 
+    cycle.accountabilityCoachAssignment?.accountabilityCoach;
+
+  const coachName = accountabilityCoach
+    ? [accountabilityCoach.firstName, accountabilityCoach.lastName]
       .filter(Boolean)
       .join(" ") ||
-    cycle.peerCoach.email ||
-    "Peer Coach";
+    accountabilityCoach.email ||
+    "Accountability Coach"
+  : "Not Assigned";
+  
 
   const assessmentComplete = Boolean(
     cycle.initialAssessment?.completedAt
@@ -137,7 +149,7 @@ export default async function AccountabilityPage() {
 
             <div>
               <p className="text-xs text-[var(--text-muted)]">
-                Peer Coach
+                Accountability Partner
               </p>
               <p className="mt-1 text-sm font-semibold text-[var(--text)]">
                 {coachName}

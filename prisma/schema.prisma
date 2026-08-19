@@ -86,7 +86,6 @@ model User {
   monthlyBalances MonthlyBalance[]
 
   accountabilityCyclesAsMember    AccountabilityCycle[]           @relation("AccountabilityMember")
-  accountabilityCyclesAsPeerCoach AccountabilityCycle[]           @relation("AccountabilityPeerCoach")
   uploadedCoachingDocuments       CoachingDocument[]              @relation("CoachingDocumentUploader")
   peerCoachAssignments            PeerCoachAssignment[]           @relation("PeerCoach")
   peerCoachAssignmentsAsMember    PeerCoachAssignment[]           @relation("AssignedMember")
@@ -291,8 +290,6 @@ model PeerCoachAssignment {
   programId String
   program   Program @relation(fields: [programId], references: [id], onDelete: Cascade)
 
-  accountabilityCycles AccountabilityCycle[]
-
   active Boolean @default(true)
 
   assignedAt DateTime  @default(now())
@@ -310,14 +307,8 @@ model PeerCoachAssignment {
 model AccountabilityCycle {
   id String @id @default(cuid())
 
-  assignmentId String
-  assignment   PeerCoachAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
-
   memberId String
   member   User   @relation("AccountabilityMember", fields: [memberId], references: [id], onDelete: Cascade)
-
-  peerCoachId String
-  peerCoach   User   @relation("AccountabilityPeerCoach", fields: [peerCoachId], references: [id], onDelete: Cascade)
 
   programId String
   program   Program @relation(fields: [programId], references: [id], onDelete: Cascade)
@@ -340,9 +331,7 @@ model AccountabilityCycle {
   accountabilityCoachAssignment   AccountabilityCoachAssignment? @relation(fields: [accountabilityCoachAssignmentId], references: [id])
   accountabilityCoachAssignmentId String?
 
-  @@index([assignmentId])
   @@index([memberId])
-  @@index([peerCoachId])
   @@index([programId])
   @@index([status])
 }
@@ -350,16 +339,14 @@ model AccountabilityCycle {
 model CoachingDocument {
   id String @id @default(cuid())
 
-  cycleId                  String
-  cycle                    AccountabilityCycle            @relation(fields: [cycleId], references: [id], onDelete: Cascade)
-  accountabilityAssignment AccountabilityCoachAssignment? @relation(fields: [accountabilityAssignmentId], references: [id], onDelete: Cascade)
+  cycleId String
+  cycle   AccountabilityCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
 
   type  CoachingDocumentType
   title String
 
-  fileUrl                    String?
-  fileName                   String?
-  accountabilityAssignmentId String?
+  fileUrl  String?
+  fileName String?
 
   weekNumber Int?
 
@@ -476,9 +463,8 @@ model AccountabilityCoachAssignment {
   assignedAt DateTime  @default(now())
   endedAt    DateTime?
 
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-  coachingDocuments CoachingDocument[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([accountabilityCoachId])
   @@index([memberId])

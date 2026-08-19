@@ -197,7 +197,11 @@ export default async function MemberInitialAssessmentPage() {
     },
     include: {
       initialAssessment: true,
-      peerCoach: true,
+      accountabilityCoachAssignment: {
+        include: {
+          accountabilityCoach: true,
+        },
+      },
     },
     orderBy: {
       startDate: "desc",
@@ -260,7 +264,7 @@ export default async function MemberInitialAssessmentPage() {
 
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--text-secondary)]">
             Complete your initial assessment for this accountability
-            cycle. Your Peer Coach can review your responses but cannot
+            cycle. Your Accountability Partner can review your responses but cannot
             change them.
           </p>
         </section>
