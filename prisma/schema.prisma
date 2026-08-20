@@ -292,6 +292,8 @@ model PeerCoachAssignment {
 
   active Boolean @default(true)
 
+  checkIns PeerCoachCheckIn[]
+
   assignedAt DateTime  @default(now())
   endedAt    DateTime?
 
@@ -469,4 +471,62 @@ model AccountabilityCoachAssignment {
   @@index([accountabilityCoachId])
   @@index([memberId])
   @@index([programId])
+}
+
+model PeerCoachCheckIn {
+  id String @id @default(cuid())
+
+  assignmentId String
+  assignment   PeerCoachAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  weekNumber  Int
+  checkInDate DateTime @default(now())
+
+  // 1. Attendance & Commitment
+  attendedLiveSessions Boolean?
+  liveSessionsAttended Int?
+  watchedMissedReplays Boolean?
+  missedSessionReason  String?
+
+  // 2. Trading Activity
+  totalTrades Int?
+  greenTrades Int?
+  redTrades   Int?
+  tickers     String?
+  tickerFocus String?
+
+  // 3. Trading Discipline
+  tradingPlanDiscipline String?
+  biggestStrength       String?
+  biggestChallenge      String?
+  challengeOther        String?
+
+  // 4. Accountability & Growth
+  beginningBalance Decimal? @db.Decimal(12, 2)
+  endingBalance    Decimal? @db.Decimal(12, 2)
+  weeklyGainLoss   Decimal? @db.Decimal(12, 2)
+  weeklyPercentage Decimal? @db.Decimal(8, 2)
+  biggestLesson    String?
+
+  // 5. Student Check-In
+  traderFeeling   String?
+  traderQuestions String?
+  helpNeeded      String?
+  supportNextWeek String?
+
+  // Coach Notes
+  strengthsNoticed String?
+  focusNextWeek    String?
+  actionItem       String?
+
+  commitmentScore Int?
+  moveOnePoint    String?
+
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([assignmentId, weekNumber])
+  @@index([assignmentId])
 }

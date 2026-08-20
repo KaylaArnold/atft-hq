@@ -71,6 +71,11 @@ export default async function PeerCoachMemberPage({
     include: {
       member: true,
       program: true,
+      checkIns: {
+        orderBy: {
+          weekNumber: "asc",
+        },
+      },
     },
   });
 
@@ -79,6 +84,18 @@ export default async function PeerCoachMemberPage({
   }
 
   const member = assignment.member;
+
+  const completedPeerCheckIns =
+  assignment.checkIns.filter(
+    (checkIn) => checkIn.completedAt
+  );
+
+const peerCheckInStatus =
+  completedPeerCheckIns.length === 0
+    ? "not-started"
+    : completedPeerCheckIns.length >= 4
+      ? "complete"
+      : "in-progress";
 
   const memberName =
     [member.firstName, member.lastName]
@@ -219,13 +236,15 @@ export default async function PeerCoachMemberPage({
               </h2>
             </div>
           </div>
-
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          
+        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <Link href={` /peer-coach/members/${id}/peer-check-in` }>
             <DocumentCard
               title="Peer Coach Check-In"
               detail="Mini Dripper Weekly Peer Coach Check-In"
-              status="not-started"
+              status={peerCheckInStatus}
             />
+          </Link>
           </div>
         </section>
       </div>
