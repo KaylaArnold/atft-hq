@@ -15,25 +15,44 @@ import {
   LifeBuoy,
   Sparkles,
   Ticket,
+  ClipboardCheck,
   LogOut,
   UsersRound,
   X,
   WalletCards,
+  ContactRound,
+  BriefcaseBusiness,
+  Wallet,
 } from "lucide-react";
 import { useHQ } from "@/context/HQContext";
 import { cn } from "@/lib/utils";
 
 const primary = [
-  { label: "Home", href: "/", icon: Home },
+  { label: "HQ Home", href: "/hq", icon: Home },
+
+  { label: "Projects & Tasks", href: "/hq/tasks", icon: BookOpenCheck },
+
+  { label: "Calendar", href: "/hq/calendar", icon: CalendarDays },
+  
+  { label: "Approvals", href: "/hq/approvals", icon: ClipboardCheck },
+
+  { label: "Company Library", href: "/hq/library", icon: FileStack },
+
+  { label: "CRM & Leads", href: "/hq/crm", icon: ContactRound },
+  
+  { label: "Corporate Opportunities", href: "/hq/opportunities", icon: BriefcaseBusiness },
+  
+  { label: "Revenue", href: "/hq/revenue", icon: Wallet, },
+
+  { label: "Content Calendar", href: "/hq/content", icon: CalendarDays, },
+
   { label: "Programs", href: "/programs", icon: GraduationCap },
+
   { label: "People", href: "/people", icon: UsersRound },
-  { label: "Events", href: "/events", icon: Ticket },
+
   { label: "Member Care", href: "/member-care", icon: LifeBuoy },
-  { label: "Operations", href: "/programs/atft-academy/operations", icon: BookOpenCheck },
+
   { label: "Monthly Balances", href: "/hq/monthly-balances", icon: BarChart3 },
-  { label: "Analytics", href: "/analytics", icon: BarChart3 },
-  { label: "Calendar", href: "/calendar", icon: CalendarDays },
-  { label: "Resources", href: "/resources", icon: FileStack },
 ] as const;
 
 const memberPrimary = [
